@@ -298,6 +298,61 @@
   }
   @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
   
+  /* Exit confirmation dialog */
+  .exit-backdrop {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(6px); z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; animation: backdropIn 0.2s ease-out;
+  }
+  @keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
+  .exit-dialog {
+    background: linear-gradient(135deg, #1e1e36, #16213e);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 20px; padding: 28px 24px 22px;
+    max-width: 340px; width: 100%;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+    animation: dialogIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes dialogIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .exit-icon {
+    width: 56px; height: 56px; border-radius: 16px;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(245, 158, 11, 0.2));
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .exit-icon svg { width: 28px; height: 28px; color: #ef4444; }
+  .exit-title {
+    font-size: 18px; font-weight: 700; color: white;
+    text-align: center; margin-bottom: 6px;
+  }
+  .exit-msg {
+    font-size: 13px; color: #a0a0c0; text-align: center;
+    line-height: 1.5; margin-bottom: 20px;
+  }
+  .exit-actions {
+    display: flex; gap: 10px;
+  }
+  .exit-btn {
+    flex: 1; padding: 13px; border: none; border-radius: 12px;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+  }
+  .exit-btn:active { transform: scale(0.96); }
+  .exit-btn.cancel {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: white;
+  }
+  .exit-btn.confirm {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+  }
+  
   /* Error */
   .error-box {
     padding: 24px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);
@@ -608,6 +663,25 @@
   </div>
 </div>
 
+<!-- Exit confirmation dialog -->
+<div class="exit-backdrop" id="exitBackdrop" style="display:none;">
+  <div class="exit-dialog">
+    <div class="exit-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </div>
+    <div class="exit-title">Exit BookSpotter?</div>
+    <div class="exit-msg">Are you sure you want to close the app? Any unsaved session data will be lost.</div>
+    <div class="exit-actions">
+      <button class="exit-btn cancel" id="exitCancel">Cancel</button>
+      <button class="exit-btn confirm" id="exitConfirm">Exit</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ============ State ============
 const state = {
@@ -715,7 +789,7 @@ function addRecent(term) {
 startScanBtn.addEventListener('click', startScan);
 searchInput.addEventListener('keypress', e => { if (e.key === 'Enter') startScan(); });
 document.getElementById('micBtn').addEventListener('click', () => startListening('main'));
-document.getElementById('openHistoryBtn').addEventListener('click', openHistory);
+document.getElementById('openHistoryBtn').addEventListener('click', openHistoryScreen);
 
 // ============ Scan Start ============
 async function startScan() {
@@ -728,6 +802,7 @@ async function startScan() {
   
   document.getElementById('home').classList.remove('active');
   document.getElementById('scanner').classList.add('active');
+  pushState('scanner');
   
   // If already have a stream, just update search term
   if (state.stream && state.scanning) return;
@@ -1132,9 +1207,20 @@ function updateHistoryCount() {
 }
 
 function openHistory() {
-  document.getElementById('home').classList.remove('active');
-  document.getElementById('history').classList.add('active');
-  renderHistory();
+  openHistoryScreen();
+}
+
+function closeHistory() {
+  history.back();
+}
+
+function goHome() {
+  // Legacy alias — triggers back navigation
+  history.back();
+}
+
+function toggleSettings() {
+  openSettingsPanel();
 }
 
 function renderHistory() {
@@ -1179,8 +1265,9 @@ function renderHistory() {
       const entry = state.history[idx];
       if (entry && entry.type === 'find') {
         document.getElementById('searchInput').value = entry.term;
-        closeHistory();
-        startScan();
+        history.back(); // close history screen via popstate
+        // Wait for popstate to complete then start scan
+        setTimeout(() => startScan(), 100);
       }
     });
   });
@@ -1199,7 +1286,7 @@ function closeHistory() {
   document.getElementById('home').classList.add('active');
 }
 
-document.getElementById('historyBackBtn').addEventListener('click', closeHistory);
+document.getElementById('historyBackBtn').addEventListener('click', () => history.back());
 document.getElementById('clearHistoryBtn').addEventListener('click', () => {
   if (state.history.length === 0) { showToast('History is already empty'); return; }
   state.history = [];
@@ -1217,9 +1304,8 @@ async function snapAndSave() {
   const fullCanvas = captureFullFrame();
   if (!fullCanvas) { state.paused = wasPaused; showToast('Could not capture'); return; }
   
-  const snapModal = document.getElementById('snapModal');
+  openSnapModal();
   const snapContent = document.getElementById('snapContent');
-  snapModal.classList.add('open');
   snapContent.innerHTML = `
     <div style="text-align:center;padding:40px 20px;">
       <div class="spinner" style="margin:0 auto 16px;"></div>
@@ -1306,32 +1392,20 @@ async function snapAndSave() {
 }
 
 document.getElementById('snapBtn').addEventListener('click', snapAndSave);
-document.getElementById('snapCloseBtn').addEventListener('click', () => {
-  document.getElementById('snapModal').classList.remove('open');
-  state.paused = false;
-});
+document.getElementById('snapCloseBtn').addEventListener('click', () => history.back());
 
 // ============ Edit Modal (inline search edit) ============
 const editModal = document.getElementById('editModal');
 const editInput = document.getElementById('editInput');
 
 document.getElementById('searchPill').addEventListener('click', () => {
-  editInput.value = state.searchTerm;
-  editModal.classList.add('open');
-  state.paused = true;
-  setTimeout(() => editInput.focus(), 50);
+  openEditModal();
 });
 
-document.getElementById('editCancel').addEventListener('click', closeEdit);
+document.getElementById('editCancel').addEventListener('click', () => history.back());
 document.getElementById('editApply').addEventListener('click', applyEdit);
 document.getElementById('editMic').addEventListener('click', () => startListening('edit'));
 editInput.addEventListener('keypress', e => { if (e.key === 'Enter') applyEdit(); });
-
-function closeEdit() {
-  editModal.classList.remove('open');
-  state.paused = false;
-  editInput.blur();
-}
 
 function applyEdit() {
   const newTerm = editInput.value.trim();
@@ -1339,18 +1413,18 @@ function applyEdit() {
   state.searchTerm = newTerm;
   addRecent(newTerm);
   document.getElementById('currentSearch').textContent = newTerm;
-  state.lastMatchedOrient = null; // reset orientation memory
+  state.lastMatchedOrient = null;
   state.lastFoundAt = 0;
-  closeEdit();
+  history.back(); // closes the modal via popstate
   updateStatus(`🔎 Now searching for: ${newTerm}`);
   showToast(`Searching for "${newTerm}"`);
 }
 
 // ============ Controls ============
-document.getElementById('backBtn').addEventListener('click', goHome);
+document.getElementById('backBtn').addEventListener('click', () => history.back());
 document.getElementById('pauseBtn').addEventListener('click', togglePause);
 document.getElementById('torchBtn').addEventListener('click', toggleTorch);
-document.getElementById('settingsBtn').addEventListener('click', toggleSettings);
+document.getElementById('settingsBtn').addEventListener('click', openSettingsPanel);
 
 document.getElementById('toggleMultiAngle').addEventListener('click', function() {
   state.multiAngle = !state.multiAngle;
@@ -1434,12 +1508,160 @@ function showToast(msg) {
   setTimeout(() => toast.remove(), 2500);
 }
 
-window.addEventListener('popstate', () => {
-  if (document.getElementById('scanner').classList.contains('active')) goHome();
-  else if (document.getElementById('history').classList.contains('active')) closeHistory();
+// ============ Navigation Stack & Back Gesture Handling ============
+// We push browser history states on every navigation so the system/browser
+// back gesture is intercepted via 'popstate' and routed to our handlers
+// instead of exiting the app or browser.
+
+const navStack = []; // Stack of screen identifiers
+
+function pushState(screen) {
+  navStack.push(screen);
+  // Push a new history entry so the OS back gesture will fire popstate
+  history.pushState({ screen, depth: navStack.length }, '');
+}
+
+function initNav() {
+  // Anchor state — this represents the "home" baseline.
+  // When user triggers back from here, we show the exit dialog.
+  if (!history.state || history.state.app !== 'bookspotter') {
+    history.replaceState({ app: 'bookspotter', screen: 'home', depth: 0 }, '');
+  }
+  navStack.length = 0;
+}
+
+// ============ Screen open functions ============
+function openScanner() {
+  pushState('scanner');
+  document.getElementById('home').classList.remove('active');
+  document.getElementById('scanner').classList.add('active');
+}
+
+function openHistoryScreen() {
+  pushState('history');
+  document.getElementById('home').classList.remove('active');
+  document.getElementById('history').classList.add('active');
+  renderHistory();
+}
+
+function openEditModal() {
+  pushState('editModal');
+  const editModal = document.getElementById('editModal');
+  const editInput = document.getElementById('editInput');
+  editInput.value = state.searchTerm;
+  editModal.classList.add('open');
+  state.paused = true;
+  setTimeout(() => editInput.focus(), 50);
+}
+
+function openSnapModal() {
+  pushState('snapModal');
+  document.getElementById('snapModal').classList.add('open');
+}
+
+function openSettingsPanel() {
+  const panel = document.getElementById('settingsPanel');
+  const wasOpen = panel.classList.contains('open');
+  if (wasOpen) {
+    panel.classList.remove('open');
+    // Let the popstate close it naturally via history back
+    if (navStack[navStack.length - 1] === 'settings') history.back();
+  } else {
+    pushState('settings');
+    panel.classList.add('open');
+  }
+}
+
+// ============ Close / go-back functions (called by popstate OR by UI buttons) ============
+// Close functions must NOT themselves call history.back() when invoked from popstate.
+
+function closeScannerScreen() {
+  stopScanning();
+  document.getElementById('scanner').classList.remove('active');
+  document.getElementById('home').classList.add('active');
+  // Also ensure modals that belong to scanner are closed
+  document.getElementById('settingsPanel').classList.remove('open');
+  document.getElementById('editModal').classList.remove('open');
+  document.getElementById('snapModal').classList.remove('open');
+}
+
+function closeHistoryScreen() {
+  document.getElementById('history').classList.remove('active');
+  document.getElementById('home').classList.add('active');
+}
+
+function closeEditModalOnly() {
+  const editInput = document.getElementById('editInput');
+  document.getElementById('editModal').classList.remove('open');
+  state.paused = false;
+  if (editInput) editInput.blur();
+}
+
+function closeSnapModalOnly() {
+  document.getElementById('snapModal').classList.remove('open');
+  state.paused = false;
+}
+
+function closeSettingsOnly() {
+  document.getElementById('settingsPanel').classList.remove('open');
+}
+
+// ============ Unified popstate handler ============
+// Triggered by:
+// - System back gesture (Android)
+// - Browser back button
+// - history.back() call
+window.addEventListener('popstate', (event) => {
+  // Pop the top of our nav stack
+  const popped = navStack.pop();
+  
+  if (popped === 'scanner') {
+    closeScannerScreen();
+  } else if (popped === 'history') {
+    closeHistoryScreen();
+  } else if (popped === 'editModal') {
+    closeEditModalOnly();
+  } else if (popped === 'snapModal') {
+    closeSnapModalOnly();
+  } else if (popped === 'settings') {
+    closeSettingsOnly();
+  } else {
+    // No app state to pop → user is on home screen and pressed back
+    // Show exit confirmation dialog
+    showExitConfirmation();
+  }
 });
 
+// ============ Exit Confirmation ============
+function showExitConfirmation() {
+  // Put the home state back so we don't actually navigate away until confirmed
+  history.pushState({ app: 'bookspotter', screen: 'home', depth: 0 }, '');
+  document.getElementById('exitBackdrop').style.display = 'flex';
+}
+
+function hideExitConfirmation() {
+  document.getElementById('exitBackdrop').style.display = 'none';
+}
+
+document.getElementById('exitCancel').addEventListener('click', () => {
+  hideExitConfirmation();
+});
+
+document.getElementById('exitConfirm').addEventListener('click', () => {
+  hideExitConfirmation();
+  stopScanning();
+  // Attempt to close (works in standalone PWA installed from Chrome)
+  try { window.close(); } catch(e) {}
+  // Fallback for browsers that block window.close()
+  setTimeout(() => {
+    showToast('Press your phone\'s home button to exit');
+  }, 300);
+});
+
+// ============ Init ============
+initNav();
 renderRecent();
+updateHistoryCount();
 searchInput.focus();
 </script>
 </body>
