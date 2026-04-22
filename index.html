@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1a2e">
+<title>BookSpotter</title>
+<link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;BookSpotter&quot;,&quot;short_name&quot;:&quot;BookSpotter&quot;,&quot;start_url&quot;:&quot;.&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#1a1a2e&quot;,&quot;theme_color&quot;:&quot;#1a1a2e&quot;,&quot;icons&quot;:[{&quot;src&quot;:&quot;data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%236366f1%22/%3E%3Ctext x=%2250%22 y=%2265%22 font-size=%2250%22 text-anchor=%22middle%22 fill=%22white%22%3E📚%3C/text%3E%3C/svg%3E&quot;,&quot;sizes&quot;:&quot;192x192&quot;,&quot;type&quot;:&quot;image/svg+xml&quot;}]}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { width: 100%; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f1e; color: white; user-select: none; }
+  
+  .screen { position: fixed; inset: 0; display: none; flex-direction: column; }
+  .screen.active { display: flex; }
+  
+  /* Home Screen */
+  #home {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 24px;
+    justify-content: space-between;
+  }
+  .logo-area { text-align: center; padding-top: 40px; }
+  .logo { font-size: 72px; margin-bottom: 12px; }
+  .app-name { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(90deg, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .tagline { color: #a0a0c0; margin-top: 8px; font-size: 14px; }
+  
+  .search-area { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 20px 0; }
+  .search-label { font-size: 13px; color: #8080a0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: 600; }
+  .search-input {
+    width: 100%; padding: 18px 20px; font-size: 18px; border-radius: 14px;
+    border: 2px solid rgba(139, 92, 246, 0.3); background: rgba(255,255,255,0.05);
+    color: white; outline: none; transition: all 0.3s;
+  }
+  .search-input:focus { border-color: #8b5cf6; background: rgba(255,255,255,0.08); }
+  .search-input::placeholder { color: #606080; }
+  
+  .recent-searches { margin-top: 20px; }
+  .recent-title { font-size: 12px; color: #8080a0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .recent-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    padding: 8px 14px; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 20px; font-size: 13px; cursor: pointer; transition: all 0.2s;
+  }
+  .chip:active { background: rgba(139, 92, 246, 0.3); transform: scale(0.95); }
+  
+  .scan-btn {
+    width: 100%; padding: 20px; font-size: 18px; font-weight: 700;
+    border: none; border-radius: 14px; color: white; cursor: pointer;
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+    transition: transform 0.15s; margin-top: 20px;
+  }
+  .scan-btn:active { transform: scale(0.97); }
+  .scan-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  
+  .tips { margin-top: 24px; font-size: 12px; color: #6060a0; text-align: center; line-height: 1.6; }
+  
+  /* Scanner Screen */
+  #scanner { background: black; }
+  #video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  #overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  
+  .scanner-header {
+    position: absolute; top: 0; left: 0; right: 0; padding: 16px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+    display: flex; align-items: center; gap: 12px; z-index: 10;
+  }
+  .back-btn {
+    width: 40px; height: 40px; border-radius: 50%; border: none;
+    background: rgba(0,0,0,0.5); color: white; font-size: 20px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .search-pill {
+    flex: 1; padding: 10px 16px; background: rgba(0,0,0,0.6);
+    border-radius: 20px; font-size: 14px; backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .search-pill .label { color: #a0a0c0; font-size: 11px; text-transform: uppercase; }
+  .search-pill .term { font-weight: 600; color: white; margin-top: 2px; }
+  
+  .scan-frame {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 85%; height: 45%; border: 2px solid rgba(255,255,255,0.3); border-radius: 12px;
+    pointer-events: none;
+  }
+  .scan-frame::before, .scan-frame::after,
+  .scan-frame > .corner-tl, .scan-frame > .corner-tr, .scan-frame > .corner-bl, .scan-frame > .corner-br {
+    content: ''; position: absolute; width: 24px; height: 24px;
+    border: 3px solid #8b5cf6;
+  }
+  .scan-frame::before { top: -3px; left: -3px; border-right: none; border-bottom: none; border-radius: 12px 0 0 0; }
+  .scan-frame::after { top: -3px; right: -3px; border-left: none; border-bottom: none; border-radius: 0 12px 0 0; }
+  .corner-bl { bottom: -3px; left: -3px; border-right: none; border-top: none; border-radius: 0 0 0 12px; }
+  .corner-br { bottom: -3px; right: -3px; border-left: none; border-top: none; border-radius: 0 0 12px 0; }
+  
+  .scan-line {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, #8b5cf6, transparent);
+    animation: scanMove 2s ease-in-out infinite;
+  }
+  @keyframes scanMove {
+    0%, 100% { top: 0; opacity: 0.3; }
+    50% { top: 100%; opacity: 1; }
+  }
+  
+  .status-bar {
+    position: absolute; bottom: 0; left: 0; right: 0; padding: 20px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+    z-index: 10;
+  }
+  .status-text {
+    text-align: center; font-size: 14px; color: #e0e0f0; margin-bottom: 16px;
+    min-height: 20px; font-weight: 500;
+  }
+  .controls { display: flex; gap: 12px; justify-content: center; }
+  .ctrl-btn {
+    padding: 12px 20px; border: none; border-radius: 24px; font-size: 14px; font-weight: 600;
+    background: rgba(255,255,255,0.15); color: white; backdrop-filter: blur(10px);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .ctrl-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.25); }
+  .ctrl-btn.primary { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
+  
+  /* Detection overlay */
+  .detection-box {
+    position: absolute; border: 3px solid #10b981; border-radius: 6px;
+    background: rgba(16, 185, 129, 0.15); box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+    animation: pulse 1s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+  .detection-label {
+    position: absolute; top: -28px; left: 0; padding: 4px 10px;
+    background: #10b981; color: white; font-size: 12px; font-weight: 700;
+    border-radius: 4px; white-space: nowrap;
+  }
+  
+  /* Found overlay */
+  .found-overlay {
+    position: absolute; inset: 0; background: rgba(16, 185, 129, 0.2);
+    display: flex; align-items: center; justify-content: center; z-index: 20;
+    animation: flashIn 0.4s ease-out;
+    pointer-events: none;
+  }
+  @keyframes flashIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+  .found-card {
+    background: white; color: #1a1a2e; padding: 24px 32px; border-radius: 20px;
+    text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5); max-width: 80%;
+  }
+  .found-icon { font-size: 56px; margin-bottom: 8px; }
+  .found-title { font-size: 22px; font-weight: 800; color: #10b981; margin-bottom: 8px; }
+  .found-book { font-size: 15px; color: #4a4a6a; line-height: 1.4; }
+  
+  /* Loading */
+  .loader-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.85);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 30; backdrop-filter: blur(8px);
+  }
+  .spinner {
+    width: 48px; height: 48px; border: 4px solid rgba(139, 92, 246, 0.2);
+    border-top-color: #8b5cf6; border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-text { margin-top: 16px; font-size: 14px; color: #a0a0c0; }
+  .loader-progress { margin-top: 4px; font-size: 12px; color: #606080; }
+  
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+    padding: 12px 20px; background: rgba(0,0,0,0.85); color: white;
+    border-radius: 24px; font-size: 14px; z-index: 100;
+    animation: toastIn 0.3s ease-out;
+  }
+  @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+  
+  /* Error screen */
+  .error-box {
+    padding: 24px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 12px; margin: 20px; text-align: center;
+  }
+  .error-title { font-size: 18px; font-weight: 700; color: #ef4444; margin-bottom: 8px; }
+  .error-msg { font-size: 14px; color: #e0e0f0; line-height: 1.5; }
+  
+  /* Stats */
+  .scan-stats {
+    position: absolute; top: 80px; right: 16px; padding: 8px 12px;
+    background: rgba(0,0,0,0.6); border-radius: 10px; font-size: 11px;
+    color: #a0a0c0; backdrop-filter: blur(10px); z-index: 5;
+    font-family: 'SF Mono', Monaco, monospace;
+  }
+</style>
+</head>
+<body>
+
+<!-- Home Screen -->
+<div id="home" class="screen active">
+  <div class="logo-area">
+    <div class="logo">📚</div>
+    <div class="app-name">BookSpotter</div>
+    <div class="tagline">Point. Scan. Find.</div>
+  </div>
+  
+  <div class="search-area">
+    <div class="search-label">What book are you looking for?</div>
+    <input type="text" id="searchInput" class="search-input" placeholder="e.g., Python, Shakespeare, cooking..." autocomplete="off">
+    
+    <div class="recent-searches" id="recentArea" style="display:none;">
+      <div class="recent-title">Recent Searches</div>
+      <div class="recent-chips" id="recentChips"></div>
+    </div>
+  </div>
+  
+  <div>
+    <button id="startScanBtn" class="scan-btn">Start Scanning 📷</button>
+    <div class="tips">
+      💡 Hold your phone steady and pan slowly across book spines.<br>
+      Good lighting improves detection accuracy.
+    </div>
+  </div>
+</div>
+
+<!-- Scanner Screen -->
+<div id="scanner" class="screen">
+  <video id="video" autoplay playsinline muted></video>
+  <canvas id="overlay"></canvas>
+  
+  <div class="scanner-header">
+    <button class="back-btn" id="backBtn">←</button>
+    <div class="search-pill">
+      <div class="label">Searching for</div>
+      <div class="term" id="currentSearch">—</div>
+    </div>
+  </div>
+  
+  <div class="scan-frame">
+    <div class="corner-bl"></div>
+    <div class="corner-br"></div>
+    <div class="scan-line"></div>
+  </div>
+  
+  <div class="scan-stats" id="scanStats">Scans: 0</div>
+  
+  <div class="status-bar">
+    <div class="status-text" id="statusText">Position books in the frame and hold steady</div>
+    <div class="controls">
+      <button class="ctrl-btn" id="pauseBtn">⏸ Pause</button>
+      <button class="ctrl-btn primary" id="torchBtn">💡 Light</button>
+    </div>
+  </div>
+  
+  <div class="loader-overlay" id="loader">
+    <div class="spinner"></div>
+    <div class="loader-text" id="loaderText">Preparing scanner...</div>
+    <div class="loader-progress" id="loaderProgress"></div>
+  </div>
+</div>
+
+<script>
+// ============ State ============
+const state = {
+  searchTerm: '',
+  recentSearches: [],
+  stream: null,
+  worker: null,
+  scanning: false,
+  paused: false,
+  scanCount: 0,
+  lastFoundAt: 0,
+  torchOn: false,
+  track: null,
+};
+
+// ============ Home Screen Logic ============
+const searchInput = document.getElementById('searchInput');
+const startScanBtn = document.getElementById('startScanBtn');
+const recentArea = document.getElementById('recentArea');
+const recentChips = document.getElementById('recentChips');
+
+function loadRecent() {
+  // Use in-memory only (no localStorage per sandbox constraints)
+  renderRecent();
+}
+
+function renderRecent() {
+  if (state.recentSearches.length === 0) {
+    recentArea.style.display = 'none';
+    return;
+  }
+  recentArea.style.display = 'block';
+  recentChips.innerHTML = '';
+  state.recentSearches.slice(0, 5).forEach(term => {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = term;
+    chip.onclick = () => {
+      searchInput.value = term;
+      startScan();
+    };
+    recentChips.appendChild(chip);
+  });
+}
+
+function addRecent(term) {
+  state.recentSearches = [term, ...state.recentSearches.filter(t => t !== term)].slice(0, 8);
+  renderRecent();
+}
+
+startScanBtn.addEventListener('click', startScan);
+searchInput.addEventListener('keypress', e => {
+  if (e.key === 'Enter') startScan();
+});
+
+// ============ Scan Start ============
+async function startScan() {
+  const term = searchInput.value.trim();
+  if (!term) {
+    showToast('Please enter a search term');
+    searchInput.focus();
+    return;
+  }
+  
+  state.searchTerm = term;
+  addRecent(term);
+  document.getElementById('currentSearch').textContent = term;
+  
+  // Switch screens
+  document.getElementById('home').classList.remove('active');
+  document.getElementById('scanner').classList.add('active');
+  
+  showLoader('Requesting camera access...');
+  
+  try {
+    // Request back camera
+    state.stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: { ideal: 'environment' },
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      },
+      audio: false
+    });
+    
+    const video = document.getElementById('video');
+    video.srcObject = state.stream;
+    state.track = state.stream.getVideoTracks()[0];
+    
+    await new Promise(res => video.onloadedmetadata = res);
+    
+    // Check torch support
+    const capabilities = state.track.getCapabilities ? state.track.getCapabilities() : {};
+    if (!capabilities.torch) {
+      document.getElementById('torchBtn').style.opacity = '0.5';
+    }
+    
+    // Initialize OCR worker
+    showLoader('Loading text recognition engine...');
+    await initOCR();
+    
+    hideLoader();
+    state.scanning = true;
+    state.paused = false;
+    updateStatus('Pan slowly across the book spines...');
+    scanLoop();
+    
+  } catch (err) {
+    hideLoader();
+    console.error('Camera error:', err);
+    showError(err);
+  }
+}
+
+function showError(err) {
+  let title = 'Camera Error';
+  let msg = err.message || 'Could not access camera.';
+  
+  if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+    title = 'Camera Permission Denied';
+    msg = 'Please allow camera access in your browser settings and try again.';
+  } else if (err.name === 'NotFoundError') {
+    title = 'No Camera Found';
+    msg = 'No camera was detected on this device.';
+  } else if (err.name === 'NotReadableError') {
+    title = 'Camera In Use';
+    msg = 'The camera is being used by another app. Please close it and try again.';
+  }
+  
+  const scanner = document.getElementById('scanner');
+  scanner.innerHTML = `
+    <div class="scanner-header">
+      <button class="back-btn" onclick="goHome()">←</button>
+    </div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;">
+      <div class="error-box">
+        <div class="error-title">${title}</div>
+        <div class="error-msg">${msg}</div>
+        <button class="ctrl-btn primary" style="margin-top:16px;" onclick="goHome()">Go Back</button>
+      </div>
+    </div>
+  `;
+}
+
+// ============ OCR ============
+async function initOCR() {
+  if (state.worker) return;
+  state.worker = await Tesseract.createWorker('eng', 1, {
+    logger: m => {
+      if (m.status === 'recognizing text') {
+        document.getElementById('loaderProgress').textContent = `${Math.round(m.progress * 100)}%`;
+      } else if (m.status) {
+        document.getElementById('loaderText').textContent = m.status.charAt(0).toUpperCase() + m.status.slice(1);
+      }
+    }
+  });
+  await state.worker.setParameters({
+    tessedit_pageseg_mode: Tesseract.PSM.SPARSE_TEXT,
+  });
+}
+
+// ============ Scan Loop ============
+async function scanLoop() {
+  if (!state.scanning) return;
+  
+  if (state.paused) {
+    setTimeout(scanLoop, 300);
+    return;
+  }
+  
+  const video = document.getElementById('video');
+  if (video.readyState < 2) {
+    setTimeout(scanLoop, 200);
+    return;
+  }
+  
+  try {
+    // Capture current frame
+    const canvas = document.createElement('canvas');
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+    
+    // Crop to scan frame region (center ~85% x 45%)
+    const cropW = vw * 0.85;
+    const cropH = vh * 0.45;
+    const cropX = (vw - cropW) / 2;
+    const cropY = (vh - cropH) / 2;
+    
+    canvas.width = cropW;
+    canvas.height = cropH;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+    
+    // Try multiple orientations (books are often vertical)
+    const result = await state.worker.recognize(canvas);
+    state.scanCount++;
+    document.getElementById('scanStats').textContent = `Scans: ${state.scanCount}`;
+    
+    const text = (result.data.text || '').trim();
+    const words = result.data.words || [];
+    
+    if (text.length > 2) {
+      checkMatch(text, words, cropX, cropY, vw, vh);
+    }
+    
+  } catch (e) {
+    console.error('Scan error:', e);
+  }
+  
+  // Continue loop
+  setTimeout(scanLoop, 500);
+}
+
+// ============ Matching ============
+function normalize(s) {
+  return s.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function fuzzyMatch(needle, haystack) {
+  const n = normalize(needle);
+  const h = normalize(haystack);
+  if (!n || !h) return false;
+  
+  // Direct substring
+  if (h.includes(n)) return true;
+  
+  // Check each word in haystack for loose match (handle OCR errors)
+  const nWords = n.split(' ').filter(w => w.length >= 3);
+  const hWords = h.split(' ');
+  
+  for (const nw of nWords) {
+    for (const hw of hWords) {
+      if (hw.includes(nw) || nw.includes(hw) && hw.length >= 3) {
+        return true;
+      }
+      // Levenshtein-ish: allow 1-2 char difference for longer words
+      if (nw.length >= 4 && hw.length >= 4 && editDistance(nw, hw) <= Math.max(1, Math.floor(nw.length / 5))) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function editDistance(a, b) {
+  if (a === b) return 0;
+  if (!a.length) return b.length;
+  if (!b.length) return a.length;
+  const dp = Array.from({length: a.length + 1}, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) dp[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      dp[i][j] = a[i-1] === b[j-1]
+        ? dp[i-1][j-1]
+        : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+    }
+  }
+  return dp[a.length][b.length];
+}
+
+function checkMatch(fullText, words, offsetX, offsetY, vw, vh) {
+  if (Date.now() - state.lastFoundAt < 3000) return; // debounce
+  
+  const matched = fuzzyMatch(state.searchTerm, fullText);
+  
+  if (matched) {
+    // Find which word(s) matched for highlighting
+    const matchedWords = words.filter(w => 
+      w.text && w.confidence > 30 && fuzzyMatch(state.searchTerm, w.text)
+    );
+    
+    state.lastFoundAt = Date.now();
+    drawDetection(matchedWords, offsetX, offsetY, vw, vh, fullText);
+    triggerFoundFeedback(fullText);
+  } else {
+    updateStatus(`Reading: "${fullText.slice(0, 40)}${fullText.length > 40 ? '...' : ''}"`);
+  }
+}
+
+// ============ Visual Feedback ============
+function drawDetection(words, offsetX, offsetY, vw, vh) {
+  const overlay = document.getElementById('overlay');
+  const video = document.getElementById('video');
+  const rect = video.getBoundingClientRect();
+  
+  overlay.width = rect.width;
+  overlay.height = rect.height;
+  overlay.style.width = rect.width + 'px';
+  overlay.style.height = rect.height + 'px';
+  
+  const ctx = overlay.getContext('2d');
+  ctx.clearRect(0, 0, overlay.width, overlay.height);
+  
+  // Scale from video-native coords to display coords
+  const scaleX = rect.width / vw;
+  const scaleY = rect.height / vh;
+  
+  // Video uses object-fit:cover — compute actual displayed region
+  const videoRatio = vw / vh;
+  const displayRatio = rect.width / rect.height;
+  let drawScaleX, drawScaleY, dOffsetX = 0, dOffsetY = 0;
+  
+  if (videoRatio > displayRatio) {
+    drawScaleY = rect.height / vh;
+    drawScaleX = drawScaleY;
+    dOffsetX = (rect.width - vw * drawScaleX) / 2;
+  } else {
+    drawScaleX = rect.width / vw;
+    drawScaleY = drawScaleX;
+    dOffsetY = (rect.height - vh * drawScaleY) / 2;
+  }
+  
+  ctx.strokeStyle = '#10b981';
+  ctx.lineWidth = 4;
+  ctx.fillStyle = 'rgba(16, 185, 129, 0.2)';
+  ctx.shadowColor = 'rgba(16, 185, 129, 0.8)';
+  ctx.shadowBlur = 15;
+  
+  words.forEach(w => {
+    if (!w.bbox) return;
+    const b = w.bbox;
+    const x = (b.x0 + offsetX) * drawScaleX + dOffsetX;
+    const y = (b.y0 + offsetY) * drawScaleY + dOffsetY;
+    const bw = (b.x1 - b.x0) * drawScaleX;
+    const bh = (b.y1 - b.y0) * drawScaleY;
+    ctx.fillRect(x, y, bw, bh);
+    ctx.strokeRect(x, y, bw, bh);
+  });
+  
+  setTimeout(() => {
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+  }, 2500);
+}
+
+function triggerFoundFeedback(detectedText) {
+  // Vibrate if supported
+  if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+  
+  // Beep via Web Audio
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.frequency.value = 800;
+    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.3);
+  } catch(e) {}
+  
+  // Show found card
+  const scanner = document.getElementById('scanner');
+  const existing = scanner.querySelector('.found-overlay');
+  if (existing) existing.remove();
+  
+  const overlay = document.createElement('div');
+  overlay.className = 'found-overlay';
+  overlay.innerHTML = `
+    <div class="found-card">
+      <div class="found-icon">✅</div>
+      <div class="found-title">Found!</div>
+      <div class="found-book">"${escapeHtml(detectedText.slice(0, 100))}"</div>
+    </div>
+  `;
+  scanner.appendChild(overlay);
+  
+  setTimeout(() => overlay.remove(), 2500);
+  updateStatus('✨ Match found! Keep scanning for more...');
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ============ Controls ============
+document.getElementById('backBtn').addEventListener('click', goHome);
+document.getElementById('pauseBtn').addEventListener('click', togglePause);
+document.getElementById('torchBtn').addEventListener('click', toggleTorch);
+
+function goHome() {
+  stopScanning();
+  document.getElementById('scanner').classList.remove('active');
+  document.getElementById('home').classList.add('active');
+}
+
+function togglePause() {
+  state.paused = !state.paused;
+  document.getElementById('pauseBtn').textContent = state.paused ? '▶ Resume' : '⏸ Pause';
+  updateStatus(state.paused ? 'Paused' : 'Scanning...');
+}
+
+async function toggleTorch() {
+  if (!state.track) return;
+  try {
+    const caps = state.track.getCapabilities();
+    if (!caps.torch) {
+      showToast('Flashlight not supported on this device');
+      return;
+    }
+    state.torchOn = !state.torchOn;
+    await state.track.applyConstraints({ advanced: [{ torch: state.torchOn }] });
+    document.getElementById('torchBtn').textContent = state.torchOn ? '💡 Light On' : '💡 Light';
+  } catch(e) {
+    showToast('Could not toggle flashlight');
+  }
+}
+
+function stopScanning() {
+  state.scanning = false;
+  if (state.stream) {
+    state.stream.getTracks().forEach(t => t.stop());
+    state.stream = null;
+  }
+}
+
+// ============ UI Helpers ============
+function updateStatus(text) {
+  document.getElementById('statusText').textContent = text;
+}
+
+function showLoader(text) {
+  document.getElementById('loader').style.display = 'flex';
+  document.getElementById('loaderText').textContent = text;
+  document.getElementById('loaderProgress').textContent = '';
+}
+
+function hideLoader() {
+  document.getElementById('loader').style.display = 'none';
+}
+
+function showToast(msg) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
+
+// Handle back button on Android
+window.addEventListener('popstate', () => {
+  if (document.getElementById('scanner').classList.contains('active')) {
+    goHome();
+  }
+});
+
+// Init
+loadRecent();
+searchInput.focus();
+</script>
+</body>
+</html>
