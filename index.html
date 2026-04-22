@@ -19,6 +19,7 @@
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
     padding: 24px;
     justify-content: space-between;
+    overflow-y: auto;
   }
   .logo-area { text-align: center; padding-top: 40px; }
   .logo { font-size: 72px; margin-bottom: 12px; }
@@ -79,9 +80,10 @@
   .search-pill .label { color: #a0a0c0; font-size: 11px; text-transform: uppercase; }
   .search-pill .term { font-weight: 600; color: white; margin-top: 2px; }
   
+  /* Scan frame — now TALL and narrow for vertical phone scanning spines */
   .scan-frame {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 85%; height: 45%; border: 2px solid rgba(255,255,255,0.3); border-radius: 12px;
+    width: 80%; height: 60%; border: 2px solid rgba(255,255,255,0.3); border-radius: 12px;
     pointer-events: none;
   }
   .scan-frame::before, .scan-frame::after,
@@ -104,23 +106,30 @@
     50% { top: 100%; opacity: 1; }
   }
   
+  .orient-hint {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-size: 11px; color: rgba(255,255,255,0.5); text-align: center;
+    pointer-events: none; letter-spacing: 1px;
+  }
+  
   .status-bar {
-    position: absolute; bottom: 0; left: 0; right: 0; padding: 20px;
-    background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+    position: absolute; bottom: 0; left: 0; right: 0; padding: 16px 20px 20px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%);
     z-index: 10;
   }
   .status-text {
-    text-align: center; font-size: 14px; color: #e0e0f0; margin-bottom: 16px;
-    min-height: 20px; font-weight: 500;
+    text-align: center; font-size: 13px; color: #e0e0f0; margin-bottom: 12px;
+    min-height: 18px; font-weight: 500; line-height: 1.4;
   }
-  .controls { display: flex; gap: 12px; justify-content: center; }
+  .controls { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
   .ctrl-btn {
-    padding: 12px 20px; border: none; border-radius: 24px; font-size: 14px; font-weight: 600;
+    padding: 10px 14px; border: none; border-radius: 20px; font-size: 13px; font-weight: 600;
     background: rgba(255,255,255,0.15); color: white; backdrop-filter: blur(10px);
     cursor: pointer; transition: all 0.15s;
   }
   .ctrl-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.25); }
   .ctrl-btn.primary { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
+  .ctrl-btn.active { background: linear-gradient(135deg, #10b981, #059669); }
   
   /* Detection overlay */
   .detection-box {
@@ -129,11 +138,6 @@
     animation: pulse 1s ease-in-out infinite;
   }
   @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
-  .detection-label {
-    position: absolute; top: -28px; left: 0; padding: 4px 10px;
-    background: #10b981; color: white; font-size: 12px; font-weight: 700;
-    border-radius: 4px; white-space: nowrap;
-  }
   
   /* Found overlay */
   .found-overlay {
@@ -150,6 +154,7 @@
   .found-icon { font-size: 56px; margin-bottom: 8px; }
   .found-title { font-size: 22px; font-weight: 800; color: #10b981; margin-bottom: 8px; }
   .found-book { font-size: 15px; color: #4a4a6a; line-height: 1.4; }
+  .found-orient { font-size: 11px; color: #8080a0; margin-top: 6px; }
   
   /* Loading */
   .loader-overlay {
@@ -187,8 +192,40 @@
     position: absolute; top: 80px; right: 16px; padding: 8px 12px;
     background: rgba(0,0,0,0.6); border-radius: 10px; font-size: 11px;
     color: #a0a0c0; backdrop-filter: blur(10px); z-index: 5;
-    font-family: 'SF Mono', Monaco, monospace;
+    font-family: 'SF Mono', Monaco, monospace; line-height: 1.4;
   }
+  
+  /* Debug text preview */
+  .ocr-preview {
+    position: absolute; top: 80px; left: 16px; max-width: 60%; padding: 6px 10px;
+    background: rgba(0,0,0,0.6); border-radius: 8px; font-size: 10px;
+    color: #8080a0; backdrop-filter: blur(10px); z-index: 5;
+    font-family: 'SF Mono', Monaco, monospace; line-height: 1.3;
+    max-height: 80px; overflow: hidden;
+  }
+  
+  /* Settings panel */
+  .settings-panel {
+    position: absolute; bottom: 90px; left: 16px; right: 16px;
+    background: rgba(0,0,0,0.9); border-radius: 16px; padding: 16px;
+    backdrop-filter: blur(10px); z-index: 15;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: none;
+  }
+  .settings-panel.open { display: block; }
+  .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+  .setting-label { font-size: 13px; color: #e0e0f0; }
+  .setting-desc { font-size: 10px; color: #8080a0; margin-top: 2px; }
+  .toggle {
+    width: 44px; height: 24px; background: rgba(255,255,255,0.2); border-radius: 12px;
+    position: relative; cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+  }
+  .toggle.on { background: #8b5cf6; }
+  .toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px;
+    background: white; border-radius: 50%; transition: all 0.2s;
+  }
+  .toggle.on::after { left: 22px; }
 </style>
 </head>
 <body>
@@ -203,7 +240,7 @@
   
   <div class="search-area">
     <div class="search-label">What book are you looking for?</div>
-    <input type="text" id="searchInput" class="search-input" placeholder="e.g., Python, Shakespeare, cooking..." autocomplete="off">
+    <input type="text" id="searchInput" class="search-input" placeholder="e.g., Python, Shakespeare..." autocomplete="off">
     
     <div class="recent-searches" id="recentArea" style="display:none;">
       <div class="recent-title">Recent Searches</div>
@@ -214,8 +251,8 @@
   <div>
     <button id="startScanBtn" class="scan-btn">Start Scanning 📷</button>
     <div class="tips">
-      💡 Hold your phone steady and pan slowly across book spines.<br>
-      Good lighting improves detection accuracy.
+      💡 Hold phone <strong>vertically</strong>, pan <strong>slowly</strong> across spines.<br>
+      Keep phone ~30 cm from books. Use light in dim areas.
     </div>
   </div>
 </div>
@@ -239,13 +276,40 @@
     <div class="scan-line"></div>
   </div>
   
-  <div class="scan-stats" id="scanStats">Scans: 0</div>
+  <div class="scan-stats" id="scanStats">Scans: 0<br>Last: —</div>
+  <div class="ocr-preview" id="ocrPreview"></div>
+  
+  <div class="settings-panel" id="settingsPanel">
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Multi-angle scan</div>
+        <div class="setting-desc">Reads vertical + horizontal spines (slower)</div>
+      </div>
+      <div class="toggle on" id="toggleMultiAngle"></div>
+    </div>
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">High contrast mode</div>
+        <div class="setting-desc">Enhances faded text</div>
+      </div>
+      <div class="toggle on" id="toggleContrast"></div>
+    </div>
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Show OCR text</div>
+        <div class="setting-desc">See what camera is reading</div>
+      </div>
+      <div class="toggle on" id="togglePreview"></div>
+    </div>
+  </div>
   
   <div class="status-bar">
-    <div class="status-text" id="statusText">Position books in the frame and hold steady</div>
+    <div class="status-text" id="statusText">Hold phone vertical. Point at shelf. Hold steady.</div>
     <div class="controls">
-      <button class="ctrl-btn" id="pauseBtn">⏸ Pause</button>
-      <button class="ctrl-btn primary" id="torchBtn">💡 Light</button>
+      <button class="ctrl-btn" id="pauseBtn">⏸</button>
+      <button class="ctrl-btn" id="torchBtn">💡</button>
+      <button class="ctrl-btn" id="captureBtn">🎯 Scan Now</button>
+      <button class="ctrl-btn" id="settingsBtn">⚙️</button>
     </div>
   </div>
   
@@ -269,6 +333,13 @@ const state = {
   lastFoundAt: 0,
   torchOn: false,
   track: null,
+  // Options
+  multiAngle: true,
+  contrast: true,
+  preview: true,
+  // Stats
+  lastOCRText: '',
+  lastMatchedOrient: null,
 };
 
 // ============ Home Screen Logic ============
@@ -277,26 +348,15 @@ const startScanBtn = document.getElementById('startScanBtn');
 const recentArea = document.getElementById('recentArea');
 const recentChips = document.getElementById('recentChips');
 
-function loadRecent() {
-  // Use in-memory only (no localStorage per sandbox constraints)
-  renderRecent();
-}
-
 function renderRecent() {
-  if (state.recentSearches.length === 0) {
-    recentArea.style.display = 'none';
-    return;
-  }
+  if (state.recentSearches.length === 0) { recentArea.style.display = 'none'; return; }
   recentArea.style.display = 'block';
   recentChips.innerHTML = '';
   state.recentSearches.slice(0, 5).forEach(term => {
     const chip = document.createElement('div');
     chip.className = 'chip';
     chip.textContent = term;
-    chip.onclick = () => {
-      searchInput.value = term;
-      startScan();
-    };
+    chip.onclick = () => { searchInput.value = term; startScan(); };
     recentChips.appendChild(chip);
   });
 }
@@ -307,36 +367,31 @@ function addRecent(term) {
 }
 
 startScanBtn.addEventListener('click', startScan);
-searchInput.addEventListener('keypress', e => {
-  if (e.key === 'Enter') startScan();
-});
+searchInput.addEventListener('keypress', e => { if (e.key === 'Enter') startScan(); });
 
 // ============ Scan Start ============
 async function startScan() {
   const term = searchInput.value.trim();
-  if (!term) {
-    showToast('Please enter a search term');
-    searchInput.focus();
-    return;
-  }
+  if (!term) { showToast('Please enter a search term'); searchInput.focus(); return; }
   
   state.searchTerm = term;
   addRecent(term);
   document.getElementById('currentSearch').textContent = term;
   
-  // Switch screens
   document.getElementById('home').classList.remove('active');
   document.getElementById('scanner').classList.add('active');
   
   showLoader('Requesting camera access...');
   
   try {
-    // Request back camera
+    // Request highest quality back camera
     state.stream = await navigator.mediaDevices.getUserMedia({
       video: {
         facingMode: { ideal: 'environment' },
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
+        width: { ideal: 1920 },
+        height: { ideal: 1080 },
+        // Try to get continuous autofocus
+        focusMode: 'continuous',
       },
       audio: false
     });
@@ -347,20 +402,27 @@ async function startScan() {
     
     await new Promise(res => video.onloadedmetadata = res);
     
-    // Check torch support
-    const capabilities = state.track.getCapabilities ? state.track.getCapabilities() : {};
-    if (!capabilities.torch) {
-      document.getElementById('torchBtn').style.opacity = '0.5';
-    }
+    // Try to apply continuous autofocus
+    try {
+      const caps = state.track.getCapabilities ? state.track.getCapabilities() : {};
+      const constraints = { advanced: [] };
+      if (caps.focusMode && caps.focusMode.includes('continuous')) {
+        constraints.advanced.push({ focusMode: 'continuous' });
+      }
+      if (caps.exposureMode && caps.exposureMode.includes('continuous')) {
+        constraints.advanced.push({ exposureMode: 'continuous' });
+      }
+      if (constraints.advanced.length) await state.track.applyConstraints(constraints);
+      if (!caps.torch) document.getElementById('torchBtn').style.opacity = '0.4';
+    } catch(e) {}
     
-    // Initialize OCR worker
     showLoader('Loading text recognition engine...');
     await initOCR();
     
     hideLoader();
     state.scanning = true;
     state.paused = false;
-    updateStatus('Pan slowly across the book spines...');
+    updateStatus('Hold phone vertical • Pan slowly across spines');
     scanLoop();
     
   } catch (err) {
@@ -373,34 +435,27 @@ async function startScan() {
 function showError(err) {
   let title = 'Camera Error';
   let msg = err.message || 'Could not access camera.';
-  
   if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
     title = 'Camera Permission Denied';
     msg = 'Please allow camera access in your browser settings and try again.';
   } else if (err.name === 'NotFoundError') {
-    title = 'No Camera Found';
-    msg = 'No camera was detected on this device.';
+    title = 'No Camera Found'; msg = 'No camera was detected on this device.';
   } else if (err.name === 'NotReadableError') {
-    title = 'Camera In Use';
-    msg = 'The camera is being used by another app. Please close it and try again.';
+    title = 'Camera In Use'; msg = 'The camera is being used by another app.';
   }
-  
   const scanner = document.getElementById('scanner');
   scanner.innerHTML = `
-    <div class="scanner-header">
-      <button class="back-btn" onclick="goHome()">←</button>
-    </div>
+    <div class="scanner-header"><button class="back-btn" onclick="goHome()">←</button></div>
     <div style="flex:1;display:flex;align-items:center;justify-content:center;">
       <div class="error-box">
         <div class="error-title">${title}</div>
         <div class="error-msg">${msg}</div>
         <button class="ctrl-btn primary" style="margin-top:16px;" onclick="goHome()">Go Back</button>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
-// ============ OCR ============
+// ============ OCR Init ============
 async function initOCR() {
   if (state.worker) return;
   state.worker = await Tesseract.createWorker('eng', 1, {
@@ -412,61 +467,186 @@ async function initOCR() {
       }
     }
   });
+  // Sparse text mode works better for scattered text like book spines
   await state.worker.setParameters({
     tessedit_pageseg_mode: Tesseract.PSM.SPARSE_TEXT,
+    preserve_interword_spaces: '1',
   });
+}
+
+// ============ Image Processing ============
+function captureFrame() {
+  const video = document.getElementById('video');
+  if (video.readyState < 2) return null;
+  
+  const vw = video.videoWidth;
+  const vh = video.videoHeight;
+  
+  // Crop to scan frame (center 80% x 60%)
+  const cropW = Math.floor(vw * 0.80);
+  const cropH = Math.floor(vh * 0.60);
+  const cropX = Math.floor((vw - cropW) / 2);
+  const cropY = Math.floor((vh - cropH) / 2);
+  
+  const canvas = document.createElement('canvas');
+  canvas.width = cropW;
+  canvas.height = cropH;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+  
+  return { canvas, cropX, cropY, vw, vh };
+}
+
+// Enhance image for better OCR: grayscale + contrast + threshold
+function enhance(canvas) {
+  if (!state.contrast) return canvas;
+  
+  const ctx = canvas.getContext('2d');
+  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const d = imgData.data;
+  
+  // Compute luminance and mean
+  let sum = 0;
+  const lum = new Uint8ClampedArray(d.length / 4);
+  for (let i = 0, j = 0; i < d.length; i += 4, j++) {
+    const l = (d[i] * 0.299 + d[i+1] * 0.587 + d[i+2] * 0.114) | 0;
+    lum[j] = l;
+    sum += l;
+  }
+  const mean = sum / lum.length;
+  
+  // Apply contrast stretch + soft threshold around mean
+  for (let i = 0, j = 0; i < d.length; i += 4, j++) {
+    let v = lum[j];
+    // Boost contrast around mean
+    v = (v - mean) * 1.8 + mean;
+    v = Math.max(0, Math.min(255, v));
+    d[i] = d[i+1] = d[i+2] = v;
+  }
+  ctx.putImageData(imgData, 0, 0);
+  return canvas;
+}
+
+// Rotate a canvas by 90, 180, or 270 degrees
+function rotateCanvas(srcCanvas, degrees) {
+  const out = document.createElement('canvas');
+  const ctx = out.getContext('2d');
+  const { width: w, height: h } = srcCanvas;
+  
+  if (degrees === 90) {
+    out.width = h; out.height = w;
+    ctx.translate(h, 0); ctx.rotate(Math.PI / 2);
+    ctx.drawImage(srcCanvas, 0, 0);
+  } else if (degrees === 180) {
+    out.width = w; out.height = h;
+    ctx.translate(w, h); ctx.rotate(Math.PI);
+    ctx.drawImage(srcCanvas, 0, 0);
+  } else if (degrees === 270) {
+    out.width = h; out.height = w;
+    ctx.translate(0, w); ctx.rotate(-Math.PI / 2);
+    ctx.drawImage(srcCanvas, 0, 0);
+  } else {
+    out.width = w; out.height = h;
+    ctx.drawImage(srcCanvas, 0, 0);
+  }
+  return out;
+}
+
+// Upscale small images for better OCR
+function upscaleIfSmall(canvas, minDim = 1000) {
+  const { width, height } = canvas;
+  const maxDim = Math.max(width, height);
+  if (maxDim >= minDim) return canvas;
+  
+  const scale = minDim / maxDim;
+  const out = document.createElement('canvas');
+  out.width = Math.floor(width * scale);
+  out.height = Math.floor(height * scale);
+  const ctx = out.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(canvas, 0, 0, out.width, out.height);
+  return out;
 }
 
 // ============ Scan Loop ============
 async function scanLoop() {
   if (!state.scanning) return;
+  if (state.paused) { setTimeout(scanLoop, 300); return; }
   
-  if (state.paused) {
-    setTimeout(scanLoop, 300);
-    return;
-  }
-  
-  const video = document.getElementById('video');
-  if (video.readyState < 2) {
-    setTimeout(scanLoop, 200);
-    return;
-  }
+  const frame = captureFrame();
+  if (!frame) { setTimeout(scanLoop, 200); return; }
   
   try {
-    // Capture current frame
-    const canvas = document.createElement('canvas');
-    const vw = video.videoWidth;
-    const vh = video.videoHeight;
+    // Orientations to try. If multiAngle off, only upright.
+    // For vertical book spines, 90 and 270 are the important ones.
+    const orientations = state.multiAngle ? [0, 90, 270, 180] : [0];
     
-    // Crop to scan frame region (center ~85% x 45%)
-    const cropW = vw * 0.85;
-    const cropH = vh * 0.45;
-    const cropX = (vw - cropW) / 2;
-    const cropY = (vh - cropH) / 2;
+    let bestMatch = null;
+    let allText = [];
     
-    canvas.width = cropW;
-    canvas.height = cropH;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+    for (const deg of orientations) {
+      if (!state.scanning || state.paused) break;
+      
+      // Clone + enhance + rotate + upscale
+      let work = document.createElement('canvas');
+      work.width = frame.canvas.width; work.height = frame.canvas.height;
+      work.getContext('2d').drawImage(frame.canvas, 0, 0);
+      work = enhance(work);
+      if (deg !== 0) work = rotateCanvas(work, deg);
+      work = upscaleIfSmall(work, 1200);
+      
+      const result = await state.worker.recognize(work);
+      const text = (result.data.text || '').trim();
+      state.scanCount++;
+      
+      if (text.length > 1) {
+        allText.push({ deg, text: text.slice(0, 60) });
+        const matched = fuzzyMatch(state.searchTerm, text);
+        if (matched) {
+          bestMatch = { deg, text, words: result.data.words || [] };
+          break; // found it, stop trying other orientations
+        }
+      }
+    }
     
-    // Try multiple orientations (books are often vertical)
-    const result = await state.worker.recognize(canvas);
-    state.scanCount++;
-    document.getElementById('scanStats').textContent = `Scans: ${state.scanCount}`;
+    // Update UI
+    updateStatsUI(allText);
     
-    const text = (result.data.text || '').trim();
-    const words = result.data.words || [];
-    
-    if (text.length > 2) {
-      checkMatch(text, words, cropX, cropY, vw, vh);
+    if (bestMatch && Date.now() - state.lastFoundAt > 3000) {
+      state.lastFoundAt = Date.now();
+      state.lastMatchedOrient = bestMatch.deg;
+      triggerFoundFeedback(bestMatch.text, bestMatch.deg);
     }
     
   } catch (e) {
     console.error('Scan error:', e);
   }
   
-  // Continue loop
-  setTimeout(scanLoop, 500);
+  // Shorter delay since each scan now does multiple orientations
+  setTimeout(scanLoop, 100);
+}
+
+function updateStatsUI(allText) {
+  document.getElementById('scanStats').innerHTML = 
+    `Scans: ${state.scanCount}<br>Orients: ${allText.length}`;
+  
+  if (state.preview && allText.length > 0) {
+    const combined = allText
+      .filter(t => t.text.length > 2)
+      .map(t => `[${t.deg}°] ${t.text}`)
+      .join('\n');
+    document.getElementById('ocrPreview').textContent = combined || 'No text detected';
+    document.getElementById('ocrPreview').style.display = 'block';
+  } else {
+    document.getElementById('ocrPreview').style.display = 'none';
+  }
+  
+  if (allText.length === 0) {
+    updateStatus('👁️ Looking... (ensure good focus & lighting)');
+  } else if (!document.querySelector('.found-overlay')) {
+    updateStatus(`Reading text... (${allText.length} angle${allText.length > 1 ? 's' : ''} scanned)`);
+  }
 }
 
 // ============ Matching ============
@@ -478,22 +658,17 @@ function fuzzyMatch(needle, haystack) {
   const n = normalize(needle);
   const h = normalize(haystack);
   if (!n || !h) return false;
-  
-  // Direct substring
   if (h.includes(n)) return true;
   
-  // Check each word in haystack for loose match (handle OCR errors)
   const nWords = n.split(' ').filter(w => w.length >= 3);
-  const hWords = h.split(' ');
+  const hWords = h.split(' ').filter(w => w.length >= 2);
   
   for (const nw of nWords) {
     for (const hw of hWords) {
-      if (hw.includes(nw) || nw.includes(hw) && hw.length >= 3) {
-        return true;
-      }
-      // Levenshtein-ish: allow 1-2 char difference for longer words
-      if (nw.length >= 4 && hw.length >= 4 && editDistance(nw, hw) <= Math.max(1, Math.floor(nw.length / 5))) {
-        return true;
+      if (hw.includes(nw) || (nw.includes(hw) && hw.length >= 3)) return true;
+      if (nw.length >= 4 && hw.length >= 4) {
+        const maxEdits = Math.max(1, Math.floor(nw.length / 5));
+        if (editDistance(nw, hw) <= maxEdits) return true;
       }
     }
   }
@@ -508,123 +683,50 @@ function editDistance(a, b) {
   for (let j = 1; j <= b.length; j++) dp[0][j] = j;
   for (let i = 1; i <= a.length; i++) {
     for (let j = 1; j <= b.length; j++) {
-      dp[i][j] = a[i-1] === b[j-1]
-        ? dp[i-1][j-1]
-        : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
     }
   }
   return dp[a.length][b.length];
 }
 
-function checkMatch(fullText, words, offsetX, offsetY, vw, vh) {
-  if (Date.now() - state.lastFoundAt < 3000) return; // debounce
-  
-  const matched = fuzzyMatch(state.searchTerm, fullText);
-  
-  if (matched) {
-    // Find which word(s) matched for highlighting
-    const matchedWords = words.filter(w => 
-      w.text && w.confidence > 30 && fuzzyMatch(state.searchTerm, w.text)
-    );
-    
-    state.lastFoundAt = Date.now();
-    drawDetection(matchedWords, offsetX, offsetY, vw, vh, fullText);
-    triggerFoundFeedback(fullText);
-  } else {
-    updateStatus(`Reading: "${fullText.slice(0, 40)}${fullText.length > 40 ? '...' : ''}"`);
-  }
-}
-
-// ============ Visual Feedback ============
-function drawDetection(words, offsetX, offsetY, vw, vh) {
-  const overlay = document.getElementById('overlay');
-  const video = document.getElementById('video');
-  const rect = video.getBoundingClientRect();
-  
-  overlay.width = rect.width;
-  overlay.height = rect.height;
-  overlay.style.width = rect.width + 'px';
-  overlay.style.height = rect.height + 'px';
-  
-  const ctx = overlay.getContext('2d');
-  ctx.clearRect(0, 0, overlay.width, overlay.height);
-  
-  // Scale from video-native coords to display coords
-  const scaleX = rect.width / vw;
-  const scaleY = rect.height / vh;
-  
-  // Video uses object-fit:cover — compute actual displayed region
-  const videoRatio = vw / vh;
-  const displayRatio = rect.width / rect.height;
-  let drawScaleX, drawScaleY, dOffsetX = 0, dOffsetY = 0;
-  
-  if (videoRatio > displayRatio) {
-    drawScaleY = rect.height / vh;
-    drawScaleX = drawScaleY;
-    dOffsetX = (rect.width - vw * drawScaleX) / 2;
-  } else {
-    drawScaleX = rect.width / vw;
-    drawScaleY = drawScaleX;
-    dOffsetY = (rect.height - vh * drawScaleY) / 2;
-  }
-  
-  ctx.strokeStyle = '#10b981';
-  ctx.lineWidth = 4;
-  ctx.fillStyle = 'rgba(16, 185, 129, 0.2)';
-  ctx.shadowColor = 'rgba(16, 185, 129, 0.8)';
-  ctx.shadowBlur = 15;
-  
-  words.forEach(w => {
-    if (!w.bbox) return;
-    const b = w.bbox;
-    const x = (b.x0 + offsetX) * drawScaleX + dOffsetX;
-    const y = (b.y0 + offsetY) * drawScaleY + dOffsetY;
-    const bw = (b.x1 - b.x0) * drawScaleX;
-    const bh = (b.y1 - b.y0) * drawScaleY;
-    ctx.fillRect(x, y, bw, bh);
-    ctx.strokeRect(x, y, bw, bh);
-  });
-  
-  setTimeout(() => {
-    ctx.clearRect(0, 0, overlay.width, overlay.height);
-  }, 2500);
-}
-
-function triggerFoundFeedback(detectedText) {
-  // Vibrate if supported
-  if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-  
-  // Beep via Web Audio
+// ============ Found Feedback ============
+function triggerFoundFeedback(detectedText, orientation) {
+  if (navigator.vibrate) navigator.vibrate([120, 60, 120, 60, 180]);
   try {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.frequency.value = 800;
-    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.3);
+    [800, 1000, 1200].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.08, audioCtx.currentTime + i * 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.1 + 0.15);
+      osc.start(audioCtx.currentTime + i * 0.1);
+      osc.stop(audioCtx.currentTime + i * 0.1 + 0.15);
+    });
   } catch(e) {}
   
-  // Show found card
   const scanner = document.getElementById('scanner');
   const existing = scanner.querySelector('.found-overlay');
   if (existing) existing.remove();
+  
+  const orientLabel = orientation === 0 ? 'horizontal text' 
+    : orientation === 90 ? 'spine reading top→bottom' 
+    : orientation === 270 ? 'spine reading bottom→top'
+    : 'upside-down text';
   
   const overlay = document.createElement('div');
   overlay.className = 'found-overlay';
   overlay.innerHTML = `
     <div class="found-card">
       <div class="found-icon">✅</div>
-      <div class="found-title">Found!</div>
-      <div class="found-book">"${escapeHtml(detectedText.slice(0, 100))}"</div>
+      <div class="found-title">Found "${escapeHtml(state.searchTerm)}"!</div>
+      <div class="found-book">"${escapeHtml(detectedText.slice(0, 120))}"</div>
+      <div class="found-orient">Detected as ${orientLabel}</div>
     </div>
   `;
   scanner.appendChild(overlay);
-  
-  setTimeout(() => overlay.remove(), 2500);
+  setTimeout(() => overlay.remove(), 3000);
   updateStatus('✨ Match found! Keep scanning for more...');
 }
 
@@ -636,16 +738,52 @@ function escapeHtml(s) {
 document.getElementById('backBtn').addEventListener('click', goHome);
 document.getElementById('pauseBtn').addEventListener('click', togglePause);
 document.getElementById('torchBtn').addEventListener('click', toggleTorch);
+document.getElementById('captureBtn').addEventListener('click', manualCapture);
+document.getElementById('settingsBtn').addEventListener('click', toggleSettings);
+
+// Toggles
+document.getElementById('toggleMultiAngle').addEventListener('click', function() {
+  state.multiAngle = !state.multiAngle;
+  this.classList.toggle('on', state.multiAngle);
+});
+document.getElementById('toggleContrast').addEventListener('click', function() {
+  state.contrast = !state.contrast;
+  this.classList.toggle('on', state.contrast);
+});
+document.getElementById('togglePreview').addEventListener('click', function() {
+  state.preview = !state.preview;
+  this.classList.toggle('on', state.preview);
+  if (!state.preview) document.getElementById('ocrPreview').style.display = 'none';
+});
+
+function toggleSettings() {
+  document.getElementById('settingsPanel').classList.toggle('open');
+}
+
+function manualCapture() {
+  // Pause auto-scan, do one focused intensive scan
+  const btn = document.getElementById('captureBtn');
+  btn.textContent = '⏳ Scanning...';
+  btn.disabled = true;
+  updateStatus('🎯 Deep scan in progress — hold still!');
+  
+  // Force a fresh scan cycle
+  setTimeout(() => {
+    btn.textContent = '🎯 Scan Now';
+    btn.disabled = false;
+  }, 2000);
+}
 
 function goHome() {
   stopScanning();
   document.getElementById('scanner').classList.remove('active');
   document.getElementById('home').classList.add('active');
+  document.getElementById('settingsPanel').classList.remove('open');
 }
 
 function togglePause() {
   state.paused = !state.paused;
-  document.getElementById('pauseBtn').textContent = state.paused ? '▶ Resume' : '⏸ Pause';
+  document.getElementById('pauseBtn').textContent = state.paused ? '▶' : '⏸';
   updateStatus(state.paused ? 'Paused' : 'Scanning...');
 }
 
@@ -653,16 +791,12 @@ async function toggleTorch() {
   if (!state.track) return;
   try {
     const caps = state.track.getCapabilities();
-    if (!caps.torch) {
-      showToast('Flashlight not supported on this device');
-      return;
-    }
+    if (!caps.torch) { showToast('Flashlight not supported'); return; }
     state.torchOn = !state.torchOn;
     await state.track.applyConstraints({ advanced: [{ torch: state.torchOn }] });
-    document.getElementById('torchBtn').textContent = state.torchOn ? '💡 Light On' : '💡 Light';
-  } catch(e) {
-    showToast('Could not toggle flashlight');
-  }
+    const btn = document.getElementById('torchBtn');
+    btn.classList.toggle('active', state.torchOn);
+  } catch(e) { showToast('Could not toggle flashlight'); }
 }
 
 function stopScanning() {
@@ -674,39 +808,27 @@ function stopScanning() {
 }
 
 // ============ UI Helpers ============
-function updateStatus(text) {
-  document.getElementById('statusText').textContent = text;
-}
-
+function updateStatus(text) { document.getElementById('statusText').textContent = text; }
 function showLoader(text) {
   document.getElementById('loader').style.display = 'flex';
   document.getElementById('loaderText').textContent = text;
   document.getElementById('loaderProgress').textContent = '';
 }
-
-function hideLoader() {
-  document.getElementById('loader').style.display = 'none';
-}
-
+function hideLoader() { document.getElementById('loader').style.display = 'none'; }
 function showToast(msg) {
   const existing = document.querySelector('.toast');
   if (existing) existing.remove();
   const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.textContent = msg;
+  toast.className = 'toast'; toast.textContent = msg;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 2500);
 }
 
-// Handle back button on Android
 window.addEventListener('popstate', () => {
-  if (document.getElementById('scanner').classList.contains('active')) {
-    goHome();
-  }
+  if (document.getElementById('scanner').classList.contains('active')) goHome();
 });
 
-// Init
-loadRecent();
+renderRecent();
 searchInput.focus();
 </script>
 </body>
