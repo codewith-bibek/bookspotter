@@ -240,7 +240,10 @@
   
   <div class="search-area">
     <div class="search-label">What book are you looking for?</div>
-    <input type="text" id="searchInput" class="search-input" placeholder="e.g., Python, Shakespeare..." autocomplete="off">
+    <input type="search" id="searchInput" class="search-input" placeholder="e.g., Python, Shakespeare..."
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+      inputmode="search" name="booksearch_nofill" data-lpignore="true" data-form-type="other"
+      data-1p-ignore="true">
     
     <div class="recent-searches" id="recentArea" style="display:none;">
       <div class="recent-title">Recent Searches</div>
@@ -578,9 +581,27 @@ async function scanLoop() {
   if (!frame) { setTimeout(scanLoop, 200); return; }
   
   try {
-    // Orientations to try. If multiAngle off, only upright.
-    // For vertical book spines, 90 and 270 are the important ones.
-    const orientations = state.multiAngle ? [0, 90, 270, 180] : [0];
+    // Quick pre-check: does this frame even have text-like features?
+    // If the image is nearly uniform (blur, blank wall), skip OCR entirely.
+    if (!hasTextFeatures(frame.canvas)) {
+      updateStatus('👁️ Looking for text... move closer or improve lighting');
+      document.getElementById('scanStats').innerHTML = `Scans: ${state.scanCount}<br>Skipped (no text)`;
+      setTimeout(scanLoop, 150);
+      return;
+    }
+    
+    // Smart rotation order: try last successful orientation first
+    let orientations;
+    if (state.multiAngle) {
+      const preferred = state.lastMatchedOrient;
+      if (preferred !== null && preferred !== undefined) {
+        orientations = [preferred, ...[0, 90, 270, 180].filter(d => d !== preferred)];
+      } else {
+        orientations = [0, 90, 270, 180];
+      }
+    } else {
+      orientations = [0];
+    }
     
     let bestMatch = null;
     let allText = [];
@@ -588,7 +609,6 @@ async function scanLoop() {
     for (const deg of orientations) {
       if (!state.scanning || state.paused) break;
       
-      // Clone + enhance + rotate + upscale
       let work = document.createElement('canvas');
       work.width = frame.canvas.width; work.height = frame.canvas.height;
       work.getContext('2d').drawImage(frame.canvas, 0, 0);
@@ -601,35 +621,102 @@ async function scanLoop() {
       state.scanCount++;
       
       if (text.length > 1) {
-        allText.push({ deg, text: text.slice(0, 60) });
+        allText.push({ deg, text: text.slice(0, 60), fullText: text });
         const matched = fuzzyMatch(state.searchTerm, text);
         if (matched) {
           bestMatch = { deg, text, words: result.data.words || [] };
-          break; // found it, stop trying other orientations
+          break; // Early exit — speed win
         }
       }
     }
     
-    // Update UI
     updateStatsUI(allText);
     
     if (bestMatch && Date.now() - state.lastFoundAt > 3000) {
       state.lastFoundAt = Date.now();
       state.lastMatchedOrient = bestMatch.deg;
-      triggerFoundFeedback(bestMatch.text, bestMatch.deg);
+      // Extract just the clean book title line from full OCR text
+      const bookTitle = extractBookTitle(bestMatch.text, state.searchTerm);
+      triggerFoundFeedback(bookTitle, bestMatch.deg);
     }
     
   } catch (e) {
     console.error('Scan error:', e);
   }
   
-  // Shorter delay since each scan now does multiple orientations
-  setTimeout(scanLoop, 100);
+  setTimeout(scanLoop, 80);
+}
+
+// Quick heuristic: does the image have text-like features?
+// Measures edge density — text regions have high edge density, blank walls don't.
+function hasTextFeatures(canvas) {
+  const small = document.createElement('canvas');
+  small.width = 100; small.height = 100;
+  small.getContext('2d').drawImage(canvas, 0, 0, 100, 100);
+  const d = small.getContext('2d').getImageData(0, 0, 100, 100).data;
+  
+  let edges = 0;
+  // Sample pixels and count sharp luminance transitions
+  for (let y = 1; y < 99; y += 2) {
+    for (let x = 1; x < 99; x += 2) {
+      const i = (y * 100 + x) * 4;
+      const l = d[i] * 0.299 + d[i+1] * 0.587 + d[i+2] * 0.114;
+      const iR = i + 4;
+      const lR = d[iR] * 0.299 + d[iR+1] * 0.587 + d[iR+2] * 0.114;
+      const iD = ((y+1) * 100 + x) * 4;
+      const lD = d[iD] * 0.299 + d[iD+1] * 0.587 + d[iD+2] * 0.114;
+      if (Math.abs(l - lR) > 25 || Math.abs(l - lD) > 25) edges++;
+    }
+  }
+  // Need at least ~3% edge density to suggest text is present
+  return edges > 75;
+}
+
+// Extract the cleanest title-like line from OCR text
+function extractBookTitle(fullText, searchTerm) {
+  const lines = fullText.split(/[\n\r]+/).map(l => l.trim()).filter(l => l.length > 0);
+  if (lines.length === 0) return searchTerm;
+  
+  const term = normalize(searchTerm);
+  
+  // Score each line: prefer lines with the search term, reasonable length, mostly letters
+  let best = null;
+  let bestScore = -Infinity;
+  
+  for (const line of lines) {
+    const clean = line.replace(/[^A-Za-z0-9\s\-':&.,]/g, ' ').replace(/\s+/g, ' ').trim();
+    if (clean.length < 3) continue;
+    
+    const normLine = normalize(clean);
+    const hasTerm = fuzzyMatch(searchTerm, clean);
+    
+    // Count alpha ratio (OCR noise is often symbols)
+    const letters = (clean.match(/[A-Za-z]/g) || []).length;
+    const alphaRatio = letters / clean.length;
+    
+    let score = 0;
+    if (hasTerm) score += 100;
+    if (alphaRatio > 0.6) score += 20;
+    if (clean.length >= 5 && clean.length <= 50) score += 15;
+    if (clean.length > 50) score -= 10;
+    // Prefer Title Case (real book titles usually are)
+    if (/^[A-Z]/.test(clean)) score += 5;
+    
+    if (score > bestScore) { bestScore = score; best = clean; }
+  }
+  
+  if (!best) return searchTerm;
+  
+  // Clean up: remove stray single characters at edges, collapse spaces
+  best = best.replace(/^[^A-Za-z0-9]+/, '').replace(/[^A-Za-z0-9.]+$/, '').trim();
+  // Limit length
+  if (best.length > 60) best = best.slice(0, 57) + '...';
+  return best;
 }
 
 function updateStatsUI(allText) {
   document.getElementById('scanStats').innerHTML = 
-    `Scans: ${state.scanCount}<br>Orients: ${allText.length}`;
+    `Scans: ${state.scanCount}<br>Reads: ${allText.length}`;
   
   if (state.preview && allText.length > 0) {
     const combined = allText
@@ -643,9 +730,9 @@ function updateStatsUI(allText) {
   }
   
   if (allText.length === 0) {
-    updateStatus('👁️ Looking... (ensure good focus & lighting)');
+    updateStatus('👁️ Scanning... ensure focus & lighting');
   } else if (!document.querySelector('.found-overlay')) {
-    updateStatus(`Reading text... (${allText.length} angle${allText.length > 1 ? 's' : ''} scanned)`);
+    updateStatus(`Reading text... (${allText.length} orientation${allText.length > 1 ? 's' : ''})`);
   }
 }
 
@@ -720,9 +807,9 @@ function triggerFoundFeedback(detectedText, orientation) {
   overlay.innerHTML = `
     <div class="found-card">
       <div class="found-icon">✅</div>
-      <div class="found-title">Found "${escapeHtml(state.searchTerm)}"!</div>
-      <div class="found-book">"${escapeHtml(detectedText.slice(0, 120))}"</div>
-      <div class="found-orient">Detected as ${orientLabel}</div>
+      <div class="found-title">Found!</div>
+      <div class="found-book">${escapeHtml(detectedText)}</div>
+      <div class="found-orient">Matched "${escapeHtml(state.searchTerm)}" • ${orientLabel}</div>
     </div>
   `;
   scanner.appendChild(overlay);
