@@ -21,20 +21,45 @@
     justify-content: space-between;
     overflow-y: auto;
   }
-  .logo-area { text-align: center; padding-top: 40px; }
-  .logo { font-size: 72px; margin-bottom: 12px; }
+  .logo-area { text-align: center; padding-top: 30px; position: relative; }
+  .history-btn {
+    position: absolute; top: 30px; right: 0; width: 44px; height: 44px;
+    border-radius: 50%; border: none; background: rgba(255,255,255,0.08);
+    color: white; font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .history-btn:active { background: rgba(255,255,255,0.15); }
+  .logo { font-size: 64px; margin-bottom: 8px; }
   .app-name { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(90deg, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .tagline { color: #a0a0c0; margin-top: 8px; font-size: 14px; }
   
   .search-area { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 20px 0; }
   .search-label { font-size: 13px; color: #8080a0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: 600; }
+  
+  .search-wrapper { position: relative; }
   .search-input {
-    width: 100%; padding: 18px 20px; font-size: 18px; border-radius: 14px;
+    width: 100%; padding: 18px 56px 18px 20px; font-size: 18px; border-radius: 14px;
     border: 2px solid rgba(139, 92, 246, 0.3); background: rgba(255,255,255,0.05);
     color: white; outline: none; transition: all 0.3s;
   }
   .search-input:focus { border-color: #8b5cf6; background: rgba(255,255,255,0.08); }
   .search-input::placeholder { color: #606080; }
+  .mic-btn {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    width: 40px; height: 40px; border-radius: 50%; border: none;
+    background: rgba(139, 92, 246, 0.2); color: white; font-size: 18px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .mic-btn:active { transform: translateY(-50%) scale(0.92); }
+  .mic-btn.listening {
+    background: #ef4444; animation: micPulse 1s ease-in-out infinite;
+  }
+  @keyframes micPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+    50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+  }
   
   .recent-searches { margin-top: 20px; }
   .recent-title { font-size: 12px; color: #8080a0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
@@ -71,23 +96,62 @@
     width: 40px; height: 40px; border-radius: 50%; border: none;
     background: rgba(0,0,0,0.5); color: white; font-size: 20px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
   }
+  /* Tappable pill */
   .search-pill {
-    flex: 1; padding: 10px 16px; background: rgba(0,0,0,0.6);
+    flex: 1; padding: 8px 14px; background: rgba(0,0,0,0.6);
     border-radius: 20px; font-size: 14px; backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; gap: 10px;
   }
-  .search-pill .label { color: #a0a0c0; font-size: 11px; text-transform: uppercase; }
-  .search-pill .term { font-weight: 600; color: white; margin-top: 2px; }
+  .search-pill:active { background: rgba(0,0,0,0.8); transform: scale(0.98); }
+  .search-pill .pill-info { flex: 1; min-width: 0; }
+  .search-pill .label { color: #a0a0c0; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .search-pill .term { font-weight: 600; color: white; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .search-pill .edit-icon { color: #a0a0c0; font-size: 14px; }
   
-  /* Scan frame — now TALL and narrow for vertical phone scanning spines */
+  /* Inline edit modal */
+  .edit-modal {
+    position: absolute; top: 0; left: 0; right: 0; padding: 16px;
+    background: rgba(10, 10, 20, 0.95); backdrop-filter: blur(20px);
+    z-index: 25; display: none; border-bottom: 1px solid rgba(255,255,255,0.1);
+    animation: slideDown 0.25s ease-out;
+  }
+  .edit-modal.open { display: block; }
+  @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .edit-title { font-size: 12px; color: #8080a0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 600; }
+  .edit-input-wrap { position: relative; }
+  .edit-input {
+    width: 100%; padding: 14px 50px 14px 16px; font-size: 16px; border-radius: 12px;
+    border: 2px solid #8b5cf6; background: rgba(255,255,255,0.05);
+    color: white; outline: none;
+  }
+  .edit-mic {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    width: 34px; height: 34px; border-radius: 50%; border: none;
+    background: rgba(139, 92, 246, 0.3); color: white; font-size: 15px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .edit-mic.listening { background: #ef4444; animation: micPulse 1s ease-in-out infinite; }
+  .edit-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .edit-btn {
+    flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .edit-btn.cancel { background: rgba(255,255,255,0.1); color: white; }
+  .edit-btn.apply { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white; }
+  .edit-btn:active { transform: scale(0.96); }
+  
+  /* Scan frame */
   .scan-frame {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
     width: 80%; height: 60%; border: 2px solid rgba(255,255,255,0.3); border-radius: 12px;
     pointer-events: none;
   }
   .scan-frame::before, .scan-frame::after,
-  .scan-frame > .corner-tl, .scan-frame > .corner-tr, .scan-frame > .corner-bl, .scan-frame > .corner-br {
+  .scan-frame > .corner-bl, .scan-frame > .corner-br {
     content: ''; position: absolute; width: 24px; height: 24px;
     border: 3px solid #8b5cf6;
   }
@@ -106,14 +170,8 @@
     50% { top: 100%; opacity: 1; }
   }
   
-  .orient-hint {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    font-size: 11px; color: rgba(255,255,255,0.5); text-align: center;
-    pointer-events: none; letter-spacing: 1px;
-  }
-  
   .status-bar {
-    position: absolute; bottom: 0; left: 0; right: 0; padding: 16px 20px 20px;
+    position: absolute; bottom: 0; left: 0; right: 0; padding: 16px 12px 20px;
     background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%);
     z-index: 10;
   }
@@ -121,23 +179,17 @@
     text-align: center; font-size: 13px; color: #e0e0f0; margin-bottom: 12px;
     min-height: 18px; font-weight: 500; line-height: 1.4;
   }
-  .controls { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .controls { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
   .ctrl-btn {
-    padding: 10px 14px; border: none; border-radius: 20px; font-size: 13px; font-weight: 600;
+    padding: 10px 12px; border: none; border-radius: 20px; font-size: 13px; font-weight: 600;
     background: rgba(255,255,255,0.15); color: white; backdrop-filter: blur(10px);
     cursor: pointer; transition: all 0.15s;
+    min-width: 42px;
   }
   .ctrl-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.25); }
   .ctrl-btn.primary { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
   .ctrl-btn.active { background: linear-gradient(135deg, #10b981, #059669); }
-  
-  /* Detection overlay */
-  .detection-box {
-    position: absolute; border: 3px solid #10b981; border-radius: 6px;
-    background: rgba(16, 185, 129, 0.15); box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
-    animation: pulse 1s ease-in-out infinite;
-  }
-  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+  .ctrl-btn.snap { background: linear-gradient(135deg, #f59e0b, #ef4444); }
   
   /* Found overlay */
   .found-overlay {
@@ -175,11 +227,11 @@
     position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
     padding: 12px 20px; background: rgba(0,0,0,0.85); color: white;
     border-radius: 24px; font-size: 14px; z-index: 100;
-    animation: toastIn 0.3s ease-out;
+    animation: toastIn 0.3s ease-out; max-width: 80%; text-align: center;
   }
   @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
   
-  /* Error screen */
+  /* Error */
   .error-box {
     padding: 24px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 12px; margin: 20px; text-align: center;
@@ -194,8 +246,6 @@
     color: #a0a0c0; backdrop-filter: blur(10px); z-index: 5;
     font-family: 'SF Mono', Monaco, monospace; line-height: 1.4;
   }
-  
-  /* Debug text preview */
   .ocr-preview {
     position: absolute; top: 80px; left: 16px; max-width: 60%; padding: 6px 10px;
     background: rgba(0,0,0,0.6); border-radius: 8px; font-size: 10px;
@@ -213,7 +263,7 @@
     display: none;
   }
   .settings-panel.open { display: block; }
-  .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+  .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; gap: 12px; }
   .setting-label { font-size: 13px; color: #e0e0f0; }
   .setting-desc { font-size: 10px; color: #8080a0; margin-top: 2px; }
   .toggle {
@@ -226,6 +276,77 @@
     background: white; border-radius: 50%; transition: all 0.2s;
   }
   .toggle.on::after { left: 22px; }
+  
+  /* History Screen */
+  #history { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
+  .page-header {
+    padding: 16px; display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .page-title { font-size: 18px; font-weight: 700; flex: 1; }
+  .clear-btn {
+    padding: 8px 14px; background: rgba(239, 68, 68, 0.2); color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px;
+    font-size: 12px; cursor: pointer; font-weight: 600;
+  }
+  .history-list {
+    flex: 1; overflow-y: auto; padding: 12px;
+  }
+  .history-item {
+    padding: 14px 16px; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; margin-bottom: 10px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .history-item:active { background: rgba(139, 92, 246, 0.15); transform: scale(0.98); }
+  .history-item.snap-type { border-color: rgba(245, 158, 11, 0.3); }
+  .history-term {
+    font-size: 11px; color: #8b5cf6; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .history-term.snap { color: #f59e0b; }
+  .history-book {
+    font-size: 15px; color: white; margin-top: 4px; font-weight: 500;
+    line-height: 1.4;
+  }
+  .history-time {
+    font-size: 11px; color: #6060a0; margin-top: 6px;
+  }
+  .history-books-list {
+    margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.08);
+    font-size: 13px; color: #c0c0e0; line-height: 1.6;
+  }
+  .history-books-list div { padding: 2px 0; }
+  .empty-state {
+    text-align: center; padding: 60px 20px; color: #6060a0;
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+  
+  /* Snap results modal */
+  .snap-modal {
+    position: absolute; inset: 0; background: rgba(10, 10, 20, 0.97);
+    z-index: 40; display: none; flex-direction: column;
+    animation: flashIn 0.3s ease-out;
+  }
+  .snap-modal.open { display: flex; }
+  .snap-header {
+    padding: 16px; display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .snap-title { font-size: 17px; font-weight: 700; flex: 1; }
+  .snap-content { flex: 1; overflow-y: auto; padding: 16px; }
+  .snap-preview {
+    width: 100%; max-height: 200px; object-fit: cover;
+    border-radius: 12px; margin-bottom: 16px;
+  }
+  .snap-count { font-size: 13px; color: #8080a0; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .snap-book-item {
+    padding: 12px 14px; background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 10px; margin-bottom: 8px; font-size: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .snap-book-idx { color: #f59e0b; font-weight: 700; font-size: 12px; min-width: 20px; }
 </style>
 </head>
 <body>
@@ -233,6 +354,7 @@
 <!-- Home Screen -->
 <div id="home" class="screen active">
   <div class="logo-area">
+    <button class="history-btn" id="openHistoryBtn" title="History">📜</button>
     <div class="logo">📚</div>
     <div class="app-name">BookSpotter</div>
     <div class="tagline">Point. Scan. Find.</div>
@@ -240,10 +362,13 @@
   
   <div class="search-area">
     <div class="search-label">What book are you looking for?</div>
-    <input type="search" id="searchInput" class="search-input" placeholder="e.g., Python, Shakespeare..."
-      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-      inputmode="search" name="booksearch_nofill" data-lpignore="true" data-form-type="other"
-      data-1p-ignore="true">
+    <div class="search-wrapper">
+      <input type="search" id="searchInput" class="search-input" placeholder="e.g., Python, Shakespeare..."
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+        inputmode="search" name="booksearch_nofill" data-lpignore="true" data-form-type="other"
+        data-1p-ignore="true">
+      <button class="mic-btn" id="micBtn" title="Voice search">🎤</button>
+    </div>
     
     <div class="recent-searches" id="recentArea" style="display:none;">
       <div class="recent-title">Recent Searches</div>
@@ -267,9 +392,27 @@
   
   <div class="scanner-header">
     <button class="back-btn" id="backBtn">←</button>
-    <div class="search-pill">
-      <div class="label">Searching for</div>
-      <div class="term" id="currentSearch">—</div>
+    <div class="search-pill" id="searchPill">
+      <div class="pill-info">
+        <div class="label">Searching for</div>
+        <div class="term" id="currentSearch">—</div>
+      </div>
+      <div class="edit-icon">✏️</div>
+    </div>
+  </div>
+  
+  <!-- Inline edit modal -->
+  <div class="edit-modal" id="editModal">
+    <div class="edit-title">Edit Search Term</div>
+    <div class="edit-input-wrap">
+      <input type="search" id="editInput" class="edit-input" placeholder="Type book name..."
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+        name="editsearch_nofill" data-lpignore="true" data-1p-ignore="true">
+      <button class="edit-mic" id="editMic">🎤</button>
+    </div>
+    <div class="edit-actions">
+      <button class="edit-btn cancel" id="editCancel">Cancel</button>
+      <button class="edit-btn apply" id="editApply">Update</button>
     </div>
   </div>
   
@@ -279,14 +422,14 @@
     <div class="scan-line"></div>
   </div>
   
-  <div class="scan-stats" id="scanStats">Scans: 0<br>Last: —</div>
+  <div class="scan-stats" id="scanStats">Scans: 0<br>Reads: —</div>
   <div class="ocr-preview" id="ocrPreview"></div>
   
   <div class="settings-panel" id="settingsPanel">
     <div class="setting-row">
       <div>
         <div class="setting-label">Multi-angle scan</div>
-        <div class="setting-desc">Reads vertical + horizontal spines (slower)</div>
+        <div class="setting-desc">Reads vertical + horizontal spines</div>
       </div>
       <div class="toggle on" id="toggleMultiAngle"></div>
     </div>
@@ -307,12 +450,23 @@
   </div>
   
   <div class="status-bar">
-    <div class="status-text" id="statusText">Hold phone vertical. Point at shelf. Hold steady.</div>
+    <div class="status-text" id="statusText">Hold phone vertical. Point at shelf.</div>
     <div class="controls">
       <button class="ctrl-btn" id="pauseBtn">⏸</button>
       <button class="ctrl-btn" id="torchBtn">💡</button>
-      <button class="ctrl-btn" id="captureBtn">🎯 Scan Now</button>
+      <button class="ctrl-btn snap" id="snapBtn">📸 Snap</button>
       <button class="ctrl-btn" id="settingsBtn">⚙️</button>
+    </div>
+  </div>
+  
+  <!-- Snap results modal -->
+  <div class="snap-modal" id="snapModal">
+    <div class="snap-header">
+      <button class="back-btn" id="snapCloseBtn">←</button>
+      <div class="snap-title">📸 Shelf Snapshot</div>
+    </div>
+    <div class="snap-content" id="snapContent">
+      <!-- Filled dynamically -->
     </div>
   </div>
   
@@ -323,11 +477,24 @@
   </div>
 </div>
 
+<!-- History Screen -->
+<div id="history" class="screen">
+  <div class="page-header">
+    <button class="back-btn" id="historyBackBtn">←</button>
+    <div class="page-title">📜 History</div>
+    <button class="clear-btn" id="clearHistoryBtn">Clear</button>
+  </div>
+  <div class="history-list" id="historyList">
+    <!-- Filled dynamically -->
+  </div>
+</div>
+
 <script>
 // ============ State ============
 const state = {
   searchTerm: '',
   recentSearches: [],
+  history: [], // { type: 'find'|'snap', term, book, books[], timestamp, imageData }
   stream: null,
   worker: null,
   scanning: false,
@@ -336,14 +503,75 @@ const state = {
   lastFoundAt: 0,
   torchOn: false,
   track: null,
-  // Options
   multiAngle: true,
   contrast: true,
   preview: true,
-  // Stats
-  lastOCRText: '',
   lastMatchedOrient: null,
+  recognition: null, // Speech recognition instance
+  speechTarget: null, // 'main' or 'edit'
 };
+
+// ============ Speech Recognition Setup ============
+function initSpeech() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return null;
+  const rec = new SR();
+  rec.continuous = false;
+  rec.interimResults = false;
+  rec.lang = 'en-US';
+  rec.maxAlternatives = 1;
+  return rec;
+}
+
+function startListening(target) {
+  if (!state.recognition) state.recognition = initSpeech();
+  if (!state.recognition) {
+    showToast('Voice input not supported on this browser');
+    return;
+  }
+  state.speechTarget = target;
+  const btnId = target === 'main' ? 'micBtn' : 'editMic';
+  const btn = document.getElementById(btnId);
+  
+  try {
+    state.recognition.start();
+    btn.classList.add('listening');
+    btn.textContent = '🔴';
+  } catch(e) {
+    // Already running, stop and retry
+    try { state.recognition.stop(); } catch(e2) {}
+    return;
+  }
+  
+  state.recognition.onresult = (e) => {
+    const transcript = e.results[0][0].transcript.trim();
+    if (target === 'main') {
+      document.getElementById('searchInput').value = transcript;
+    } else {
+      document.getElementById('editInput').value = transcript;
+    }
+  };
+  state.recognition.onerror = (e) => {
+    console.error('Speech error:', e.error);
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      showToast('Please allow microphone access');
+    } else if (e.error === 'no-speech') {
+      showToast('Didn\'t catch that — try again');
+    }
+    stopListening();
+  };
+  state.recognition.onend = () => stopListening();
+}
+
+function stopListening() {
+  const mainBtn = document.getElementById('micBtn');
+  const editBtn = document.getElementById('editMic');
+  mainBtn.classList.remove('listening');
+  mainBtn.textContent = '🎤';
+  editBtn.classList.remove('listening');
+  editBtn.textContent = '🎤';
+  state.speechTarget = null;
+}
 
 // ============ Home Screen Logic ============
 const searchInput = document.getElementById('searchInput');
@@ -371,6 +599,8 @@ function addRecent(term) {
 
 startScanBtn.addEventListener('click', startScan);
 searchInput.addEventListener('keypress', e => { if (e.key === 'Enter') startScan(); });
+document.getElementById('micBtn').addEventListener('click', () => startListening('main'));
+document.getElementById('openHistoryBtn').addEventListener('click', openHistory);
 
 // ============ Scan Start ============
 async function startScan() {
@@ -384,16 +614,16 @@ async function startScan() {
   document.getElementById('home').classList.remove('active');
   document.getElementById('scanner').classList.add('active');
   
+  // If already have a stream, just update search term
+  if (state.stream && state.scanning) return;
+  
   showLoader('Requesting camera access...');
   
   try {
-    // Request highest quality back camera
     state.stream = await navigator.mediaDevices.getUserMedia({
       video: {
         facingMode: { ideal: 'environment' },
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
-        // Try to get continuous autofocus
+        width: { ideal: 1920 }, height: { ideal: 1080 },
         focusMode: 'continuous',
       },
       audio: false
@@ -402,19 +632,13 @@ async function startScan() {
     const video = document.getElementById('video');
     video.srcObject = state.stream;
     state.track = state.stream.getVideoTracks()[0];
-    
     await new Promise(res => video.onloadedmetadata = res);
     
-    // Try to apply continuous autofocus
     try {
       const caps = state.track.getCapabilities ? state.track.getCapabilities() : {};
       const constraints = { advanced: [] };
-      if (caps.focusMode && caps.focusMode.includes('continuous')) {
-        constraints.advanced.push({ focusMode: 'continuous' });
-      }
-      if (caps.exposureMode && caps.exposureMode.includes('continuous')) {
-        constraints.advanced.push({ exposureMode: 'continuous' });
-      }
+      if (caps.focusMode && caps.focusMode.includes('continuous')) constraints.advanced.push({ focusMode: 'continuous' });
+      if (caps.exposureMode && caps.exposureMode.includes('continuous')) constraints.advanced.push({ exposureMode: 'continuous' });
       if (constraints.advanced.length) await state.track.applyConstraints(constraints);
       if (!caps.torch) document.getElementById('torchBtn').style.opacity = '0.4';
     } catch(e) {}
@@ -425,7 +649,7 @@ async function startScan() {
     hideLoader();
     state.scanning = true;
     state.paused = false;
-    updateStatus('Hold phone vertical • Pan slowly across spines');
+    updateStatus('Hold phone vertical • Pan slowly');
     scanLoop();
     
   } catch (err) {
@@ -439,13 +663,10 @@ function showError(err) {
   let title = 'Camera Error';
   let msg = err.message || 'Could not access camera.';
   if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-    title = 'Camera Permission Denied';
-    msg = 'Please allow camera access in your browser settings and try again.';
-  } else if (err.name === 'NotFoundError') {
-    title = 'No Camera Found'; msg = 'No camera was detected on this device.';
-  } else if (err.name === 'NotReadableError') {
-    title = 'Camera In Use'; msg = 'The camera is being used by another app.';
-  }
+    title = 'Camera Permission Denied'; msg = 'Please allow camera access in your browser settings.';
+  } else if (err.name === 'NotFoundError') { title = 'No Camera Found'; msg = 'No camera detected.'; }
+  else if (err.name === 'NotReadableError') { title = 'Camera In Use'; msg = 'The camera is being used by another app.'; }
+  
   const scanner = document.getElementById('scanner');
   scanner.innerHTML = `
     <div class="scanner-header"><button class="back-btn" onclick="goHome()">←</button></div>
@@ -470,7 +691,6 @@ async function initOCR() {
       }
     }
   });
-  // Sparse text mode works better for scattered text like book spines
   await state.worker.setParameters({
     tessedit_pageseg_mode: Tesseract.PSM.SPARSE_TEXT,
     preserve_interword_spaces: '1',
@@ -481,47 +701,43 @@ async function initOCR() {
 function captureFrame() {
   const video = document.getElementById('video');
   if (video.readyState < 2) return null;
-  
   const vw = video.videoWidth;
   const vh = video.videoHeight;
-  
-  // Crop to scan frame (center 80% x 60%)
   const cropW = Math.floor(vw * 0.80);
   const cropH = Math.floor(vh * 0.60);
   const cropX = Math.floor((vw - cropW) / 2);
   const cropY = Math.floor((vh - cropH) / 2);
-  
   const canvas = document.createElement('canvas');
-  canvas.width = cropW;
-  canvas.height = cropH;
+  canvas.width = cropW; canvas.height = cropH;
   const ctx = canvas.getContext('2d');
   ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
-  
   return { canvas, cropX, cropY, vw, vh };
 }
 
-// Enhance image for better OCR: grayscale + contrast + threshold
+function captureFullFrame() {
+  const video = document.getElementById('video');
+  if (video.readyState < 2) return null;
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  return canvas;
+}
+
 function enhance(canvas) {
   if (!state.contrast) return canvas;
-  
   const ctx = canvas.getContext('2d');
   const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const d = imgData.data;
-  
-  // Compute luminance and mean
   let sum = 0;
   const lum = new Uint8ClampedArray(d.length / 4);
   for (let i = 0, j = 0; i < d.length; i += 4, j++) {
     const l = (d[i] * 0.299 + d[i+1] * 0.587 + d[i+2] * 0.114) | 0;
-    lum[j] = l;
-    sum += l;
+    lum[j] = l; sum += l;
   }
   const mean = sum / lum.length;
-  
-  // Apply contrast stretch + soft threshold around mean
   for (let i = 0, j = 0; i < d.length; i += 4, j++) {
     let v = lum[j];
-    // Boost contrast around mean
     v = (v - mean) * 1.8 + mean;
     v = Math.max(0, Math.min(255, v));
     d[i] = d[i+1] = d[i+2] = v;
@@ -530,12 +746,10 @@ function enhance(canvas) {
   return canvas;
 }
 
-// Rotate a canvas by 90, 180, or 270 degrees
 function rotateCanvas(srcCanvas, degrees) {
   const out = document.createElement('canvas');
   const ctx = out.getContext('2d');
   const { width: w, height: h } = srcCanvas;
-  
   if (degrees === 90) {
     out.width = h; out.height = w;
     ctx.translate(h, 0); ctx.rotate(Math.PI / 2);
@@ -555,12 +769,10 @@ function rotateCanvas(srcCanvas, degrees) {
   return out;
 }
 
-// Upscale small images for better OCR
 function upscaleIfSmall(canvas, minDim = 1000) {
   const { width, height } = canvas;
   const maxDim = Math.max(width, height);
   if (maxDim >= minDim) return canvas;
-  
   const scale = minDim / maxDim;
   const out = document.createElement('canvas');
   out.width = Math.floor(width * scale);
@@ -581,16 +793,13 @@ async function scanLoop() {
   if (!frame) { setTimeout(scanLoop, 200); return; }
   
   try {
-    // Quick pre-check: does this frame even have text-like features?
-    // If the image is nearly uniform (blur, blank wall), skip OCR entirely.
     if (!hasTextFeatures(frame.canvas)) {
-      updateStatus('👁️ Looking for text... move closer or improve lighting');
-      document.getElementById('scanStats').innerHTML = `Scans: ${state.scanCount}<br>Skipped (no text)`;
+      updateStatus('👁️ Move closer or improve lighting');
+      document.getElementById('scanStats').innerHTML = `Scans: ${state.scanCount}<br>No text`;
       setTimeout(scanLoop, 150);
       return;
     }
     
-    // Smart rotation order: try last successful orientation first
     let orientations;
     if (state.multiAngle) {
       const preferred = state.lastMatchedOrient;
@@ -599,16 +808,13 @@ async function scanLoop() {
       } else {
         orientations = [0, 90, 270, 180];
       }
-    } else {
-      orientations = [0];
-    }
+    } else { orientations = [0]; }
     
     let bestMatch = null;
     let allText = [];
     
     for (const deg of orientations) {
       if (!state.scanning || state.paused) break;
-      
       let work = document.createElement('canvas');
       work.width = frame.canvas.width; work.height = frame.canvas.height;
       work.getContext('2d').drawImage(frame.canvas, 0, 0);
@@ -625,7 +831,7 @@ async function scanLoop() {
         const matched = fuzzyMatch(state.searchTerm, text);
         if (matched) {
           bestMatch = { deg, text, words: result.data.words || [] };
-          break; // Early exit — speed win
+          break;
         }
       }
     }
@@ -635,28 +841,23 @@ async function scanLoop() {
     if (bestMatch && Date.now() - state.lastFoundAt > 3000) {
       state.lastFoundAt = Date.now();
       state.lastMatchedOrient = bestMatch.deg;
-      // Extract just the clean book title line from full OCR text
       const bookTitle = extractBookTitle(bestMatch.text, state.searchTerm);
       triggerFoundFeedback(bookTitle, bestMatch.deg);
+      // Save to history
+      addToHistory({ type: 'find', term: state.searchTerm, book: bookTitle, timestamp: Date.now() });
     }
     
-  } catch (e) {
-    console.error('Scan error:', e);
-  }
+  } catch (e) { console.error('Scan error:', e); }
   
   setTimeout(scanLoop, 80);
 }
 
-// Quick heuristic: does the image have text-like features?
-// Measures edge density — text regions have high edge density, blank walls don't.
 function hasTextFeatures(canvas) {
   const small = document.createElement('canvas');
   small.width = 100; small.height = 100;
   small.getContext('2d').drawImage(canvas, 0, 0, 100, 100);
   const d = small.getContext('2d').getImageData(0, 0, 100, 100).data;
-  
   let edges = 0;
-  // Sample pixels and count sharp luminance transitions
   for (let y = 1; y < 99; y += 2) {
     for (let x = 1; x < 99; x += 2) {
       const i = (y * 100 + x) * 4;
@@ -668,48 +869,33 @@ function hasTextFeatures(canvas) {
       if (Math.abs(l - lR) > 25 || Math.abs(l - lD) > 25) edges++;
     }
   }
-  // Need at least ~3% edge density to suggest text is present
   return edges > 75;
 }
 
-// Extract the cleanest title-like line from OCR text
 function extractBookTitle(fullText, searchTerm) {
   const lines = fullText.split(/[\n\r]+/).map(l => l.trim()).filter(l => l.length > 0);
   if (lines.length === 0) return searchTerm;
   
-  const term = normalize(searchTerm);
-  
-  // Score each line: prefer lines with the search term, reasonable length, mostly letters
   let best = null;
   let bestScore = -Infinity;
   
   for (const line of lines) {
     const clean = line.replace(/[^A-Za-z0-9\s\-':&.,]/g, ' ').replace(/\s+/g, ' ').trim();
     if (clean.length < 3) continue;
-    
-    const normLine = normalize(clean);
     const hasTerm = fuzzyMatch(searchTerm, clean);
-    
-    // Count alpha ratio (OCR noise is often symbols)
     const letters = (clean.match(/[A-Za-z]/g) || []).length;
     const alphaRatio = letters / clean.length;
-    
     let score = 0;
     if (hasTerm) score += 100;
     if (alphaRatio > 0.6) score += 20;
     if (clean.length >= 5 && clean.length <= 50) score += 15;
     if (clean.length > 50) score -= 10;
-    // Prefer Title Case (real book titles usually are)
     if (/^[A-Z]/.test(clean)) score += 5;
-    
     if (score > bestScore) { bestScore = score; best = clean; }
   }
   
   if (!best) return searchTerm;
-  
-  // Clean up: remove stray single characters at edges, collapse spaces
   best = best.replace(/^[^A-Za-z0-9]+/, '').replace(/[^A-Za-z0-9.]+$/, '').trim();
-  // Limit length
   if (best.length > 60) best = best.slice(0, 57) + '...';
   return best;
 }
@@ -717,22 +903,18 @@ function extractBookTitle(fullText, searchTerm) {
 function updateStatsUI(allText) {
   document.getElementById('scanStats').innerHTML = 
     `Scans: ${state.scanCount}<br>Reads: ${allText.length}`;
-  
   if (state.preview && allText.length > 0) {
-    const combined = allText
-      .filter(t => t.text.length > 2)
-      .map(t => `[${t.deg}°] ${t.text}`)
-      .join('\n');
-    document.getElementById('ocrPreview').textContent = combined || 'No text detected';
+    const combined = allText.filter(t => t.text.length > 2)
+      .map(t => `[${t.deg}°] ${t.text}`).join('\n');
+    document.getElementById('ocrPreview').textContent = combined || 'No text';
     document.getElementById('ocrPreview').style.display = 'block';
   } else {
     document.getElementById('ocrPreview').style.display = 'none';
   }
-  
   if (allText.length === 0) {
-    updateStatus('👁️ Scanning... ensure focus & lighting');
+    updateStatus('👁️ Scanning...');
   } else if (!document.querySelector('.found-overlay')) {
-    updateStatus(`Reading text... (${allText.length} orientation${allText.length > 1 ? 's' : ''})`);
+    updateStatus(`Reading... (${allText.length} orientation${allText.length > 1 ? 's' : ''})`);
   }
 }
 
@@ -742,14 +924,11 @@ function normalize(s) {
 }
 
 function fuzzyMatch(needle, haystack) {
-  const n = normalize(needle);
-  const h = normalize(haystack);
+  const n = normalize(needle); const h = normalize(haystack);
   if (!n || !h) return false;
   if (h.includes(n)) return true;
-  
   const nWords = n.split(' ').filter(w => w.length >= 3);
   const hWords = h.split(' ').filter(w => w.length >= 2);
-  
   for (const nw of nWords) {
     for (const hw of hWords) {
       if (hw.includes(nw) || (nw.includes(hw) && hw.length >= 3)) return true;
@@ -797,10 +976,9 @@ function triggerFoundFeedback(detectedText, orientation) {
   const existing = scanner.querySelector('.found-overlay');
   if (existing) existing.remove();
   
-  const orientLabel = orientation === 0 ? 'horizontal text' 
-    : orientation === 90 ? 'spine reading top→bottom' 
-    : orientation === 270 ? 'spine reading bottom→top'
-    : 'upside-down text';
+  const orientLabel = orientation === 0 ? 'horizontal text'
+    : orientation === 90 ? 'spine reading top→bottom'
+    : orientation === 270 ? 'spine reading bottom→top' : 'upside-down text';
   
   const overlay = document.createElement('div');
   overlay.className = 'found-overlay';
@@ -810,25 +988,242 @@ function triggerFoundFeedback(detectedText, orientation) {
       <div class="found-title">Found!</div>
       <div class="found-book">${escapeHtml(detectedText)}</div>
       <div class="found-orient">Matched "${escapeHtml(state.searchTerm)}" • ${orientLabel}</div>
-    </div>
-  `;
+    </div>`;
   scanner.appendChild(overlay);
   setTimeout(() => overlay.remove(), 3000);
-  updateStatus('✨ Match found! Keep scanning for more...');
+  updateStatus('✨ Match found!');
 }
 
 function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ============ History ============
+function addToHistory(entry) {
+  state.history.unshift(entry);
+  if (state.history.length > 100) state.history.length = 100;
+}
+
+function openHistory() {
+  document.getElementById('home').classList.remove('active');
+  document.getElementById('history').classList.add('active');
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (state.history.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <div>No history yet</div>
+        <div style="font-size:12px;margin-top:6px;">Books you find will appear here</div>
+      </div>`;
+    return;
+  }
+  
+  list.innerHTML = state.history.map((h, idx) => {
+    const timeAgo = formatTime(h.timestamp);
+    if (h.type === 'find') {
+      return `
+        <div class="history-item" data-idx="${idx}" data-term="${escapeHtml(h.term)}">
+          <div class="history-term">🔍 ${escapeHtml(h.term)}</div>
+          <div class="history-book">${escapeHtml(h.book)}</div>
+          <div class="history-time">${timeAgo}</div>
+        </div>`;
+    } else {
+      return `
+        <div class="history-item snap-type" data-idx="${idx}">
+          <div class="history-term snap">📸 Shelf Snapshot</div>
+          <div class="history-book">${h.books.length} book${h.books.length !== 1 ? 's' : ''} detected</div>
+          <div class="history-books-list">
+            ${h.books.slice(0, 8).map(b => `<div>• ${escapeHtml(b)}</div>`).join('')}
+            ${h.books.length > 8 ? `<div style="color:#6060a0;">...and ${h.books.length - 8} more</div>` : ''}
+          </div>
+          <div class="history-time">${timeAgo}</div>
+        </div>`;
+    }
+  }).join('');
+  
+  // Click handlers: tap a find entry to re-search
+  list.querySelectorAll('.history-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = parseInt(el.dataset.idx);
+      const entry = state.history[idx];
+      if (entry && entry.type === 'find') {
+        document.getElementById('searchInput').value = entry.term;
+        closeHistory();
+        startScan();
+      }
+    });
+  });
+}
+
+function formatTime(ts) {
+  const diff = Date.now() - ts;
+  if (diff < 60000) return 'Just now';
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+  return new Date(ts).toLocaleString();
+}
+
+function closeHistory() {
+  document.getElementById('history').classList.remove('active');
+  document.getElementById('home').classList.add('active');
+}
+
+document.getElementById('historyBackBtn').addEventListener('click', closeHistory);
+document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+  if (state.history.length === 0) { showToast('History is already empty'); return; }
+  state.history = [];
+  renderHistory();
+  showToast('History cleared');
+});
+
+// ============ Snap & Save ============
+async function snapAndSave() {
+  if (!state.worker) { showToast('Scanner not ready'); return; }
+  const wasPaused = state.paused;
+  state.paused = true;
+  
+  const fullCanvas = captureFullFrame();
+  if (!fullCanvas) { state.paused = wasPaused; showToast('Could not capture'); return; }
+  
+  const snapModal = document.getElementById('snapModal');
+  const snapContent = document.getElementById('snapContent');
+  snapModal.classList.add('open');
+  snapContent.innerHTML = `
+    <div style="text-align:center;padding:40px 20px;">
+      <div class="spinner" style="margin:0 auto 16px;"></div>
+      <div style="color:#a0a0c0;font-size:14px;">Analyzing shelf...</div>
+      <div style="color:#606080;font-size:12px;margin-top:6px;" id="snapProgress">Scanning all orientations</div>
+    </div>`;
+  
+  try {
+    const previewURL = fullCanvas.toDataURL('image/jpeg', 0.7);
+    const allBooks = new Set();
+    const orientations = [0, 90, 270, 180];
+    
+    for (let i = 0; i < orientations.length; i++) {
+      const deg = orientations[i];
+      document.getElementById('snapProgress').textContent = 
+        `Scanning orientation ${i + 1}/${orientations.length} (${deg}°)...`;
+      
+      let work = document.createElement('canvas');
+      work.width = fullCanvas.width; work.height = fullCanvas.height;
+      work.getContext('2d').drawImage(fullCanvas, 0, 0);
+      work = enhance(work);
+      if (deg !== 0) work = rotateCanvas(work, deg);
+      
+      const result = await state.worker.recognize(work);
+      const text = result.data.text || '';
+      const lines = text.split(/[\n\r]+/).map(l => l.trim()).filter(l => l.length > 2);
+      
+      for (const line of lines) {
+        const clean = line.replace(/[^A-Za-z0-9\s\-':&.,]/g, ' ').replace(/\s+/g, ' ').trim();
+        if (clean.length < 4) continue;
+        const letters = (clean.match(/[A-Za-z]/g) || []).length;
+        if (letters / clean.length < 0.6) continue;
+        if (clean.length > 60) continue;
+        const finalClean = clean.replace(/^[^A-Za-z0-9]+/, '').replace(/[^A-Za-z0-9.]+$/, '').trim();
+        if (finalClean.length >= 4) allBooks.add(finalClean);
+      }
+    }
+    
+    // Deduplicate similar titles (fuzzy)
+    const booksList = Array.from(allBooks);
+    const deduped = [];
+    for (const b of booksList) {
+      let isDup = false;
+      for (const d of deduped) {
+        if (normalize(d).includes(normalize(b)) || normalize(b).includes(normalize(d))) {
+          isDup = true; break;
+        }
+      }
+      if (!isDup) deduped.push(b);
+    }
+    
+    // Save to history
+    addToHistory({
+      type: 'snap', books: deduped, timestamp: Date.now(),
+    });
+    
+    // Show results
+    if (deduped.length === 0) {
+      snapContent.innerHTML = `
+        <img class="snap-preview" src="${previewURL}" />
+        <div class="empty-state" style="padding:30px 10px;">
+          <div class="empty-icon">🤷</div>
+          <div>No readable text detected</div>
+          <div style="font-size:12px;margin-top:6px;">Try better lighting or move closer</div>
+        </div>`;
+    } else {
+      snapContent.innerHTML = `
+        <img class="snap-preview" src="${previewURL}" />
+        <div class="snap-count">📚 ${deduped.length} book${deduped.length !== 1 ? 's' : ''} detected • Saved to History</div>
+        ${deduped.map((b, i) => `
+          <div class="snap-book-item">
+            <div class="snap-book-idx">${i + 1}.</div>
+            <div>${escapeHtml(b)}</div>
+          </div>
+        `).join('')}`;
+    }
+    
+    if (navigator.vibrate) navigator.vibrate(100);
+    
+  } catch (e) {
+    console.error('Snap error:', e);
+    snapContent.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div>Scan failed</div></div>`;
+  }
+}
+
+document.getElementById('snapBtn').addEventListener('click', snapAndSave);
+document.getElementById('snapCloseBtn').addEventListener('click', () => {
+  document.getElementById('snapModal').classList.remove('open');
+  state.paused = false;
+});
+
+// ============ Edit Modal (inline search edit) ============
+const editModal = document.getElementById('editModal');
+const editInput = document.getElementById('editInput');
+
+document.getElementById('searchPill').addEventListener('click', () => {
+  editInput.value = state.searchTerm;
+  editModal.classList.add('open');
+  state.paused = true;
+  setTimeout(() => editInput.focus(), 50);
+});
+
+document.getElementById('editCancel').addEventListener('click', closeEdit);
+document.getElementById('editApply').addEventListener('click', applyEdit);
+document.getElementById('editMic').addEventListener('click', () => startListening('edit'));
+editInput.addEventListener('keypress', e => { if (e.key === 'Enter') applyEdit(); });
+
+function closeEdit() {
+  editModal.classList.remove('open');
+  state.paused = false;
+  editInput.blur();
+}
+
+function applyEdit() {
+  const newTerm = editInput.value.trim();
+  if (!newTerm) { showToast('Please enter a search term'); return; }
+  state.searchTerm = newTerm;
+  addRecent(newTerm);
+  document.getElementById('currentSearch').textContent = newTerm;
+  state.lastMatchedOrient = null; // reset orientation memory
+  state.lastFoundAt = 0;
+  closeEdit();
+  updateStatus(`🔎 Now searching for: ${newTerm}`);
+  showToast(`Searching for "${newTerm}"`);
 }
 
 // ============ Controls ============
 document.getElementById('backBtn').addEventListener('click', goHome);
 document.getElementById('pauseBtn').addEventListener('click', togglePause);
 document.getElementById('torchBtn').addEventListener('click', toggleTorch);
-document.getElementById('captureBtn').addEventListener('click', manualCapture);
 document.getElementById('settingsBtn').addEventListener('click', toggleSettings);
 
-// Toggles
 document.getElementById('toggleMultiAngle').addEventListener('click', function() {
   state.multiAngle = !state.multiAngle;
   this.classList.toggle('on', state.multiAngle);
@@ -843,29 +1238,15 @@ document.getElementById('togglePreview').addEventListener('click', function() {
   if (!state.preview) document.getElementById('ocrPreview').style.display = 'none';
 });
 
-function toggleSettings() {
-  document.getElementById('settingsPanel').classList.toggle('open');
-}
-
-function manualCapture() {
-  // Pause auto-scan, do one focused intensive scan
-  const btn = document.getElementById('captureBtn');
-  btn.textContent = '⏳ Scanning...';
-  btn.disabled = true;
-  updateStatus('🎯 Deep scan in progress — hold still!');
-  
-  // Force a fresh scan cycle
-  setTimeout(() => {
-    btn.textContent = '🎯 Scan Now';
-    btn.disabled = false;
-  }, 2000);
-}
+function toggleSettings() { document.getElementById('settingsPanel').classList.toggle('open'); }
 
 function goHome() {
   stopScanning();
   document.getElementById('scanner').classList.remove('active');
   document.getElementById('home').classList.add('active');
   document.getElementById('settingsPanel').classList.remove('open');
+  document.getElementById('editModal').classList.remove('open');
+  document.getElementById('snapModal').classList.remove('open');
 }
 
 function togglePause() {
@@ -881,8 +1262,7 @@ async function toggleTorch() {
     if (!caps.torch) { showToast('Flashlight not supported'); return; }
     state.torchOn = !state.torchOn;
     await state.track.applyConstraints({ advanced: [{ torch: state.torchOn }] });
-    const btn = document.getElementById('torchBtn');
-    btn.classList.toggle('active', state.torchOn);
+    document.getElementById('torchBtn').classList.toggle('active', state.torchOn);
   } catch(e) { showToast('Could not toggle flashlight'); }
 }
 
@@ -913,6 +1293,7 @@ function showToast(msg) {
 
 window.addEventListener('popstate', () => {
   if (document.getElementById('scanner').classList.contains('active')) goHome();
+  else if (document.getElementById('history').classList.contains('active')) closeHistory();
 });
 
 renderRecent();
