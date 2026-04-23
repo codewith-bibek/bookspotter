@@ -254,21 +254,21 @@
 
   /* Matches pill */
   .matches-pill {
-    position: absolute; top: 76px; left: 50%; transform: translateX(-50%);
-    padding: 8px 14px;
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.9));
+    position: absolute; bottom: 155px; left: 50%; transform: translateX(-50%);
+    padding: 9px 16px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.92), rgba(5, 150, 105, 0.92));
     border: 1px solid rgba(52, 211, 153, 0.6);
-    border-radius: 20px;
+    border-radius: 22px;
     font-size: 13px; font-weight: 700; color: white;
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45), inset 0 1px 0 rgba(255,255,255,0.15);
     z-index: 8; cursor: pointer; transition: all 0.2s;
     display: none; align-items: center; gap: 8px;
   }
   .matches-pill.visible { display: inline-flex; animation: pillIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.4); }
   .matches-pill:active { transform: translateX(-50%) scale(0.95); }
   @keyframes pillIn {
-    from { opacity: 0; transform: translate(-50%, -10px); }
+    from { opacity: 0; transform: translate(-50%, 10px); }
     to { opacity: 1; transform: translate(-50%, 0); }
   }
   .matches-pill svg { width: 14px; height: 14px; }
@@ -279,9 +279,9 @@
   }
   .matches-pill.pulse { animation: pillPulse 0.6s ease-out; }
   @keyframes pillPulse {
-    0% { transform: translateX(-50%) scale(1); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); }
-    50% { transform: translateX(-50%) scale(1.12); box-shadow: 0 4px 24px rgba(16, 185, 129, 0.8); }
-    100% { transform: translateX(-50%) scale(1); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); }
+    0% { transform: translateX(-50%) scale(1); box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45); }
+    50% { transform: translateX(-50%) scale(1.12); box-shadow: 0 6px 28px rgba(16, 185, 129, 0.85); }
+    100% { transform: translateX(-50%) scale(1); box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45); }
   }
 
   /* Matches modal */
@@ -324,9 +324,9 @@
   .match-item-meta { font-size: 11px; color: #8080a0; margin-top: 4px; }
   .matches-empty { text-align: center; padding: 40px 20px; color: #6060a0; }
 
-  /* Match toast */
+  /* Match toast — sits just above the matches pill, inside scan area */
   .match-toast {
-    position: absolute; top: 130px; left: 50%; transform: translateX(-50%);
+    position: absolute; bottom: 210px; left: 50%; transform: translateX(-50%);
     padding: 10px 16px;
     background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(22, 33, 62, 0.95));
     border: 1px solid rgba(16, 185, 129, 0.5);
@@ -339,12 +339,12 @@
     pointer-events: none;
   }
   @keyframes matchToastIn {
-    0% { opacity: 0; transform: translate(-50%, -20px) scale(0.9); }
-    60% { opacity: 1; transform: translate(-50%, 3px) scale(1.03); }
+    0% { opacity: 0; transform: translate(-50%, 20px) scale(0.9); }
+    60% { opacity: 1; transform: translate(-50%, -3px) scale(1.03); }
     100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
   }
   .match-toast.fading { animation: matchToastOut 0.3s ease-in forwards; }
-  @keyframes matchToastOut { to { opacity: 0; transform: translate(-50%, -10px) scale(0.95); } }
+  @keyframes matchToastOut { to { opacity: 0; transform: translate(-50%, 10px) scale(0.95); } }
   .match-toast-icon {
     width: 28px; height: 28px; border-radius: 50%;
     background: linear-gradient(135deg, #10b981, #059669);
@@ -1017,7 +1017,19 @@ async function startScan() {
     openScannerScreen();
   }
 
+  // If a stream is already running, this is just a search-term change — keep going
   if (state.stream && state.scanning) return;
+
+  // Fresh scanning session — reset all session state
+  state.sessionMatches = [];
+  state.lastFoundAt = 0;
+  state.lastMatchedOrient = null;
+  state.scanCount = 0;
+  state.paused = false;
+  updateMatchesPill();
+  // Clear any stale toasts that might have survived
+  const staleToast = document.querySelector('.match-toast');
+  if (staleToast) staleToast.remove();
 
   showLoader('Requesting camera access...');
   try {
