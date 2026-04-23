@@ -10,10 +10,10 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { width: 100%; height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f0f1e; color: white; user-select: none; }
-  
+
   .screen { position: fixed; inset: 0; display: none; flex-direction: column; }
   .screen.active { display: flex; }
-  
+
   /* Home Screen */
   #home {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
@@ -25,10 +25,10 @@
   .logo { font-size: 64px; margin-bottom: 8px; }
   .app-name { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; background: linear-gradient(90deg, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .tagline { color: #a0a0c0; margin-top: 8px; font-size: 14px; }
-  
+
   .search-area { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 20px 0; }
   .search-label { font-size: 13px; color: #8080a0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; font-weight: 600; }
-  
+
   .search-wrapper { position: relative; }
   .search-input {
     width: 100%; padding: 18px 68px 18px 20px; font-size: 18px; border-radius: 14px;
@@ -57,7 +57,7 @@
     0%, 100% { box-shadow: 0 4px 16px rgba(239, 68, 68, 0.5), 0 0 0 0 rgba(239, 68, 68, 0.6); }
     50% { box-shadow: 0 4px 16px rgba(239, 68, 68, 0.5), 0 0 0 14px rgba(239, 68, 68, 0); }
   }
-  
+
   .recent-searches { margin-top: 20px; }
   .recent-title { font-size: 12px; color: #8080a0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
   .recent-chips { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -66,7 +66,7 @@
     border-radius: 20px; font-size: 13px; cursor: pointer; transition: all 0.2s;
   }
   .chip:active { background: rgba(139, 92, 246, 0.3); transform: scale(0.95); }
-  
+
   .history-link {
     margin-top: 16px; padding: 14px 18px;
     background: rgba(255,255,255,0.04);
@@ -97,7 +97,7 @@
     padding: 2px 8px; border-radius: 10px;
     margin-left: 6px;
   }
-  
+
   .scan-btn {
     width: 100%; padding: 20px; font-size: 18px; font-weight: 700;
     border: none; border-radius: 14px; color: white; cursor: pointer;
@@ -107,20 +107,16 @@
     display: flex; align-items: center; justify-content: center; gap: 10px;
   }
   .scan-btn:active { transform: scale(0.97); }
-  .scan-btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .scan-btn svg { width: 22px; height: 22px; stroke-width: 2.2; }
-  
+
   .tips { margin-top: 24px; font-size: 12px; color: #6060a0; text-align: center; line-height: 1.6; }
-  .version {
-    margin-top: 12px; font-size: 11px; color: #4a4a70; text-align: center;
-    letter-spacing: 0.5px; font-weight: 500;
-  }
-  
+  .version { margin-top: 12px; font-size: 11px; color: #4a4a70; text-align: center; letter-spacing: 0.5px; font-weight: 500; }
+
   /* Scanner Screen */
   #scanner { background: black; }
   #video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   #overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-  
+
   .scanner-header {
     position: absolute; top: 0; left: 0; right: 0; padding: 16px;
     background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);
@@ -132,7 +128,6 @@
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
   }
-  /* Tappable pill */
   .search-pill {
     flex: 1; padding: 8px 14px; background: rgba(0,0,0,0.6);
     border-radius: 20px; font-size: 14px; backdrop-filter: blur(10px);
@@ -145,7 +140,7 @@
   .search-pill .label { color: #a0a0c0; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
   .search-pill .term { font-weight: 600; color: white; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .search-pill .edit-icon { color: #a0a0c0; font-size: 14px; }
-  
+
   /* Inline edit modal */
   .edit-modal {
     position: absolute; top: 0; left: 0; right: 0; padding: 16px;
@@ -182,8 +177,7 @@
   .edit-btn.cancel { background: rgba(255,255,255,0.1); color: white; }
   .edit-btn.apply { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white; }
   .edit-btn:active { transform: scale(0.96); }
-  
-  /* Scan frame */
+
   .scan-frame {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
     width: 80%; height: 60%; border: 2px solid rgba(255,255,255,0.3); border-radius: 12px;
@@ -198,7 +192,7 @@
   .scan-frame::after { top: -3px; right: -3px; border-left: none; border-bottom: none; border-radius: 0 12px 0 0; }
   .corner-bl { bottom: -3px; left: -3px; border-right: none; border-top: none; border-radius: 0 0 0 12px; }
   .corner-br { bottom: -3px; right: -3px; border-left: none; border-top: none; border-radius: 0 0 12px 0; }
-  
+
   .scan-line {
     position: absolute; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, #8b5cf6, transparent);
@@ -208,7 +202,7 @@
     0%, 100% { top: 0; opacity: 0.3; }
     50% { top: 100%; opacity: 1; }
   }
-  
+
   .status-bar {
     position: absolute; bottom: 0; left: 0; right: 0; padding: 16px 16px 22px;
     background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 70%, transparent 100%);
@@ -247,9 +241,7 @@
     background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(239, 68, 68, 0.25));
     border-color: rgba(245, 158, 11, 0.6);
   }
-  .ctrl-btn.snap:active {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.4), rgba(239, 68, 68, 0.4));
-  }
+  .ctrl-btn.snap:active { background: linear-gradient(135deg, rgba(245, 158, 11, 0.4), rgba(239, 68, 68, 0.4)); }
   .ctrl-btn.active {
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.35), rgba(5, 150, 105, 0.35));
     border-color: rgba(16, 185, 129, 0.7);
@@ -259,8 +251,8 @@
     background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(99, 102, 241, 0.3));
     border-color: rgba(139, 92, 246, 0.6);
   }
-  
-  /* Matches pill — live session counter */
+
+  /* Matches pill */
   .matches-pill {
     position: absolute; top: 76px; left: 50%; transform: translateX(-50%);
     padding: 8px 14px;
@@ -272,9 +264,8 @@
     box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
     z-index: 8; cursor: pointer; transition: all 0.2s;
     display: none; align-items: center; gap: 8px;
-    animation: pillIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.4);
   }
-  .matches-pill.visible { display: inline-flex; }
+  .matches-pill.visible { display: inline-flex; animation: pillIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.4); }
   .matches-pill:active { transform: translateX(-50%) scale(0.95); }
   @keyframes pillIn {
     from { opacity: 0; transform: translate(-50%, -10px); }
@@ -286,16 +277,14 @@
     padding: 1px 8px; border-radius: 10px; font-size: 12px;
     min-width: 20px; text-align: center;
   }
-  .matches-pill.pulse {
-    animation: pillPulse 0.6s ease-out;
-  }
+  .matches-pill.pulse { animation: pillPulse 0.6s ease-out; }
   @keyframes pillPulse {
     0% { transform: translateX(-50%) scale(1); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); }
     50% { transform: translateX(-50%) scale(1.12); box-shadow: 0 4px 24px rgba(16, 185, 129, 0.8); }
     100% { transform: translateX(-50%) scale(1); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); }
   }
-  
-  /* Matches list modal (expanded view) */
+
+  /* Matches modal */
   .matches-modal {
     position: absolute; inset: 0;
     background: rgba(10, 10, 20, 0.97);
@@ -333,11 +322,9 @@
   .match-item-body { flex: 1; min-width: 0; }
   .match-item-title { font-size: 15px; font-weight: 600; color: white; line-height: 1.35; }
   .match-item-meta { font-size: 11px; color: #8080a0; margin-top: 4px; }
-  .matches-empty {
-    text-align: center; padding: 40px 20px; color: #6060a0;
-  }
-  
-  /* Small toast-style "new match" indicator */
+  .matches-empty { text-align: center; padding: 40px 20px; color: #6060a0; }
+
+  /* Match toast */
   .match-toast {
     position: absolute; top: 130px; left: 50%; transform: translateX(-50%);
     padding: 10px 16px;
@@ -357,9 +344,7 @@
     100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
   }
   .match-toast.fading { animation: matchToastOut 0.3s ease-in forwards; }
-  @keyframes matchToastOut {
-    to { opacity: 0; transform: translate(-50%, -10px) scale(0.95); }
-  }
+  @keyframes matchToastOut { to { opacity: 0; transform: translate(-50%, -10px) scale(0.95); } }
   .match-toast-icon {
     width: 28px; height: 28px; border-radius: 50%;
     background: linear-gradient(135deg, #10b981, #059669);
@@ -378,8 +363,8 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     max-width: 220px;
   }
-  
-  /* Session summary overlay (shown on exit) */
+
+  /* Session summary */
   .session-summary-toast {
     position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
     padding: 14px 20px;
@@ -397,103 +382,9 @@
   }
   .session-summary-toast.fading { animation: summaryOut 0.3s ease-in forwards; }
   @keyframes summaryOut { to { opacity: 0; transform: translate(-50%, -20px); } }
-  
-  /* Found overlay */
-  .found-overlay {
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.25) 0%, rgba(0, 0, 0, 0.4) 70%);
-    display: flex; align-items: center; justify-content: center; z-index: 20;
-    animation: flashIn 0.4s ease-out;
-    pointer-events: none;
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-  }
-  @keyframes flashIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  .found-card {
-    position: relative;
-    background: linear-gradient(145deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
-    border: 1.5px solid rgba(16, 185, 129, 0.5);
-    color: white;
-    padding: 28px 28px 24px;
-    border-radius: 24px;
-    text-align: center;
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.6),
-      0 0 40px rgba(16, 185, 129, 0.35),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    max-width: 86%;
-    min-width: 260px;
-    animation: foundCardIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.4);
-    overflow: hidden;
-  }
-  @keyframes foundCardIn {
-    0% { opacity: 0; transform: scale(0.7) translateY(20px); }
-    60% { opacity: 1; transform: scale(1.05) translateY(-4px); }
-    100% { opacity: 1; transform: scale(1) translateY(0); }
-  }
-  /* Subtle gradient glow accent at top edge */
-  .found-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, transparent, #10b981, #34d399, #10b981, transparent);
-    border-radius: 24px 24px 0 0;
-  }
-  .found-check {
-    width: 68px; height: 68px; margin: 0 auto 12px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #10b981, #059669);
-    display: flex; align-items: center; justify-content: center;
-    box-shadow:
-      0 8px 24px rgba(16, 185, 129, 0.5),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    animation: checkPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.6) 0.1s both;
-  }
-  @keyframes checkPop {
-    0% { transform: scale(0) rotate(-45deg); opacity: 0; }
-    70% { transform: scale(1.15) rotate(5deg); opacity: 1; }
-    100% { transform: scale(1) rotate(0); opacity: 1; }
-  }
-  .found-check svg {
-    width: 36px; height: 36px; color: white;
-    stroke-width: 3.5;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
-  }
-  .found-title {
-    font-size: 13px; font-weight: 700; letter-spacing: 2px;
-    color: #34d399; text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  .found-book {
-    font-size: 18px; color: white; line-height: 1.35;
-    font-weight: 600; letter-spacing: -0.2px;
-    padding: 0 4px;
-    word-break: break-word;
-  }
-  .found-divider {
-    width: 40px; height: 2px; margin: 14px auto 10px;
-    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.6), transparent);
-    border-radius: 1px;
-  }
-  .found-meta {
-    font-size: 11px; color: #8b8ba8;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    flex-wrap: wrap;
-  }
-  .found-meta-pill {
-    display: inline-flex; align-items: center; gap: 4px;
-    background: rgba(139, 92, 246, 0.15);
-    border: 1px solid rgba(139, 92, 246, 0.25);
-    color: #a78bfa;
-    padding: 3px 9px; border-radius: 10px;
-    font-weight: 600; font-size: 10px;
-    letter-spacing: 0.3px;
-  }
-  
+
+  @keyframes flashIn { from { opacity: 0; } to { opacity: 1; } }
+
   /* Loading */
   .loader-overlay {
     position: absolute; inset: 0; background: rgba(0,0,0,0.85);
@@ -507,7 +398,7 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .loader-text { margin-top: 16px; font-size: 14px; color: #a0a0c0; }
   .loader-progress { margin-top: 4px; font-size: 12px; color: #606080; }
-  
+
   /* Toast */
   .toast {
     position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
@@ -516,8 +407,107 @@
     animation: toastIn 0.3s ease-out; max-width: 80%; text-align: center;
   }
   @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
-  
-  /* Exit confirmation dialog */
+
+  .error-box {
+    padding: 24px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 12px; margin: 20px; text-align: center;
+  }
+  .error-title { font-size: 18px; font-weight: 700; color: #ef4444; margin-bottom: 8px; }
+  .error-msg { font-size: 14px; color: #e0e0f0; line-height: 1.5; }
+
+  .scan-stats {
+    position: absolute; top: 80px; right: 16px; padding: 8px 12px;
+    background: rgba(0,0,0,0.6); border-radius: 10px; font-size: 11px;
+    color: #a0a0c0; backdrop-filter: blur(10px); z-index: 5;
+    font-family: 'SF Mono', Monaco, monospace; line-height: 1.4;
+  }
+  .ocr-preview {
+    position: absolute; top: 80px; left: 16px; max-width: 60%; padding: 6px 10px;
+    background: rgba(0,0,0,0.6); border-radius: 8px; font-size: 10px;
+    color: #8080a0; backdrop-filter: blur(10px); z-index: 5;
+    font-family: 'SF Mono', Monaco, monospace; line-height: 1.3;
+    max-height: 80px; overflow: hidden;
+  }
+
+  .settings-panel {
+    position: absolute; bottom: 110px; left: 16px; right: 16px;
+    background: rgba(0,0,0,0.9); border-radius: 16px; padding: 16px;
+    backdrop-filter: blur(10px); z-index: 15;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: none;
+  }
+  .settings-panel.open { display: block; }
+  .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; gap: 12px; }
+  .setting-label { font-size: 13px; color: #e0e0f0; }
+  .setting-desc { font-size: 10px; color: #8080a0; margin-top: 2px; }
+  .toggle {
+    width: 44px; height: 24px; background: rgba(255,255,255,0.2); border-radius: 12px;
+    position: relative; cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+  }
+  .toggle.on { background: #8b5cf6; }
+  .toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px;
+    background: white; border-radius: 50%; transition: all 0.2s;
+  }
+  .toggle.on::after { left: 22px; }
+
+  /* History Screen */
+  #history { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
+  .page-header {
+    padding: 16px; display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .page-title { font-size: 18px; font-weight: 700; flex: 1; }
+  .clear-btn {
+    padding: 8px 14px; background: rgba(239, 68, 68, 0.2); color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px;
+    font-size: 12px; cursor: pointer; font-weight: 600;
+  }
+  .history-list { flex: 1; overflow-y: auto; padding: 12px; }
+  .history-item {
+    padding: 14px 16px; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; margin-bottom: 10px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .history-item:active { background: rgba(139, 92, 246, 0.15); transform: scale(0.98); }
+  .history-item.snap-type { border-color: rgba(245, 158, 11, 0.3); }
+  .history-term { font-size: 11px; color: #8b5cf6; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .history-term.snap { color: #f59e0b; }
+  .history-book { font-size: 15px; color: white; margin-top: 4px; font-weight: 500; line-height: 1.4; }
+  .history-time { font-size: 11px; color: #6060a0; margin-top: 6px; }
+  .history-books-list {
+    margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.08);
+    font-size: 13px; color: #c0c0e0; line-height: 1.6;
+  }
+  .history-books-list div { padding: 2px 0; }
+  .empty-state { text-align: center; padding: 60px 20px; color: #6060a0; }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+
+  /* Snap modal */
+  .snap-modal {
+    position: absolute; inset: 0; background: rgba(10, 10, 20, 0.97);
+    z-index: 40; display: none; flex-direction: column;
+    animation: flashIn 0.3s ease-out;
+  }
+  .snap-modal.open { display: flex; }
+  .snap-header {
+    padding: 16px; display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .snap-title { font-size: 17px; font-weight: 700; flex: 1; }
+  .snap-content { flex: 1; overflow-y: auto; padding: 16px; }
+  .snap-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 16px; }
+  .snap-count { font-size: 13px; color: #8080a0; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .snap-book-item {
+    padding: 12px 14px; background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    border-radius: 10px; margin-bottom: 8px; font-size: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .snap-book-idx { color: #f59e0b; font-weight: 700; font-size: 12px; min-width: 20px; }
+
+  /* Exit dialog */
   .exit-backdrop {
     position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(6px); z-index: 200;
@@ -545,149 +535,16 @@
     margin: 0 auto 16px;
   }
   .exit-icon svg { width: 28px; height: 28px; color: #ef4444; }
-  .exit-title {
-    font-size: 18px; font-weight: 700; color: white;
-    text-align: center; margin-bottom: 6px;
-  }
-  .exit-msg {
-    font-size: 13px; color: #a0a0c0; text-align: center;
-    line-height: 1.5; margin-bottom: 20px;
-  }
-  .exit-actions {
-    display: flex; gap: 10px;
-  }
+  .exit-title { font-size: 18px; font-weight: 700; color: white; text-align: center; margin-bottom: 6px; }
+  .exit-msg { font-size: 13px; color: #a0a0c0; text-align: center; line-height: 1.5; margin-bottom: 20px; }
+  .exit-actions { display: flex; gap: 10px; }
   .exit-btn {
     flex: 1; padding: 13px; border: none; border-radius: 12px;
     font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s;
   }
   .exit-btn:active { transform: scale(0.96); }
-  .exit-btn.cancel {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: white;
-  }
-  .exit-btn.confirm {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
-  }
-  
-  /* Error */
-  .error-box {
-    padding: 24px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: 12px; margin: 20px; text-align: center;
-  }
-  .error-title { font-size: 18px; font-weight: 700; color: #ef4444; margin-bottom: 8px; }
-  .error-msg { font-size: 14px; color: #e0e0f0; line-height: 1.5; }
-  
-  /* Stats */
-  .scan-stats {
-    position: absolute; top: 80px; right: 16px; padding: 8px 12px;
-    background: rgba(0,0,0,0.6); border-radius: 10px; font-size: 11px;
-    color: #a0a0c0; backdrop-filter: blur(10px); z-index: 5;
-    font-family: 'SF Mono', Monaco, monospace; line-height: 1.4;
-  }
-  .ocr-preview {
-    position: absolute; top: 80px; left: 16px; max-width: 60%; padding: 6px 10px;
-    background: rgba(0,0,0,0.6); border-radius: 8px; font-size: 10px;
-    color: #8080a0; backdrop-filter: blur(10px); z-index: 5;
-    font-family: 'SF Mono', Monaco, monospace; line-height: 1.3;
-    max-height: 80px; overflow: hidden;
-  }
-  
-  /* Settings panel */
-  .settings-panel {
-    position: absolute; bottom: 90px; left: 16px; right: 16px;
-    background: rgba(0,0,0,0.9); border-radius: 16px; padding: 16px;
-    backdrop-filter: blur(10px); z-index: 15;
-    border: 1px solid rgba(255,255,255,0.1);
-    display: none;
-  }
-  .settings-panel.open { display: block; }
-  .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; gap: 12px; }
-  .setting-label { font-size: 13px; color: #e0e0f0; }
-  .setting-desc { font-size: 10px; color: #8080a0; margin-top: 2px; }
-  .toggle {
-    width: 44px; height: 24px; background: rgba(255,255,255,0.2); border-radius: 12px;
-    position: relative; cursor: pointer; transition: all 0.2s; flex-shrink: 0;
-  }
-  .toggle.on { background: #8b5cf6; }
-  .toggle::after {
-    content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px;
-    background: white; border-radius: 50%; transition: all 0.2s;
-  }
-  .toggle.on::after { left: 22px; }
-  
-  /* History Screen */
-  #history { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
-  .page-header {
-    padding: 16px; display: flex; align-items: center; gap: 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
-  .page-title { font-size: 18px; font-weight: 700; flex: 1; }
-  .clear-btn {
-    padding: 8px 14px; background: rgba(239, 68, 68, 0.2); color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px;
-    font-size: 12px; cursor: pointer; font-weight: 600;
-  }
-  .history-list {
-    flex: 1; overflow-y: auto; padding: 12px;
-  }
-  .history-item {
-    padding: 14px 16px; background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 12px; margin-bottom: 10px; cursor: pointer;
-    transition: all 0.15s;
-  }
-  .history-item:active { background: rgba(139, 92, 246, 0.15); transform: scale(0.98); }
-  .history-item.snap-type { border-color: rgba(245, 158, 11, 0.3); }
-  .history-term {
-    font-size: 11px; color: #8b5cf6; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .history-term.snap { color: #f59e0b; }
-  .history-book {
-    font-size: 15px; color: white; margin-top: 4px; font-weight: 500;
-    line-height: 1.4;
-  }
-  .history-time {
-    font-size: 11px; color: #6060a0; margin-top: 6px;
-  }
-  .history-books-list {
-    margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.08);
-    font-size: 13px; color: #c0c0e0; line-height: 1.6;
-  }
-  .history-books-list div { padding: 2px 0; }
-  .empty-state {
-    text-align: center; padding: 60px 20px; color: #6060a0;
-  }
-  .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
-  
-  /* Snap results modal */
-  .snap-modal {
-    position: absolute; inset: 0; background: rgba(10, 10, 20, 0.97);
-    z-index: 40; display: none; flex-direction: column;
-    animation: flashIn 0.3s ease-out;
-  }
-  .snap-modal.open { display: flex; }
-  .snap-header {
-    padding: 16px; display: flex; align-items: center; gap: 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-  }
-  .snap-title { font-size: 17px; font-weight: 700; flex: 1; }
-  .snap-content { flex: 1; overflow-y: auto; padding: 16px; }
-  .snap-preview {
-    width: 100%; max-height: 200px; object-fit: cover;
-    border-radius: 12px; margin-bottom: 16px;
-  }
-  .snap-count { font-size: 13px; color: #8080a0; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-  .snap-book-item {
-    padding: 12px 14px; background: rgba(245, 158, 11, 0.08);
-    border: 1px solid rgba(245, 158, 11, 0.2);
-    border-radius: 10px; margin-bottom: 8px; font-size: 14px;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .snap-book-idx { color: #f59e0b; font-weight: 700; font-size: 12px; min-width: 20px; }
+  .exit-btn.cancel { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: white; }
+  .exit-btn.confirm { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35); }
 </style>
 </head>
 <body>
@@ -699,7 +556,7 @@
     <div class="app-name">BookSpotter</div>
     <div class="tagline">Point. Scan. Find.</div>
   </div>
-  
+
   <div class="search-area">
     <div class="search-label">What book are you looking for?</div>
     <div class="search-wrapper">
@@ -707,7 +564,7 @@
         autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
         inputmode="search" name="booksearch_nofill" data-lpignore="true" data-form-type="other"
         data-1p-ignore="true">
-      <button class="mic-btn" id="micBtn" title="Voice search" aria-label="Voice search">
+      <button class="mic-btn" id="micBtn" aria-label="Voice search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="9" y="2" width="6" height="12" rx="3"/>
           <path d="M5 10a7 7 0 0 0 14 0"/>
@@ -716,8 +573,8 @@
         </svg>
       </button>
     </div>
-    
-    <div class="history-link" id="openHistoryBtn" role="button" aria-label="View search history">
+
+    <div class="history-link" id="openHistoryBtn" role="button">
       <div class="history-link-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 12a9 9 0 1 0 3-6.7"/>
@@ -727,17 +584,17 @@
       </div>
       <div class="history-link-text">
         <div class="history-link-title">View Search History<span class="history-link-count" id="historyCount" style="display:none;">0</span></div>
-        <div class="history-link-sub">See previously found books & snapshots</div>
+        <div class="history-link-sub">See previously found books &amp; snapshots</div>
       </div>
       <div class="history-link-arrow">›</div>
     </div>
-    
+
     <div class="recent-searches" id="recentArea" style="display:none;">
       <div class="recent-title">Recent Searches</div>
       <div class="recent-chips" id="recentChips"></div>
     </div>
   </div>
-  
+
   <div>
     <button id="startScanBtn" class="scan-btn">
       <span>Start Scanning</span>
@@ -758,7 +615,7 @@
 <div id="scanner" class="screen">
   <video id="video" autoplay playsinline muted></video>
   <canvas id="overlay"></canvas>
-  
+
   <div class="scanner-header">
     <button class="back-btn" id="backBtn">←</button>
     <div class="search-pill" id="searchPill">
@@ -769,8 +626,7 @@
       <div class="edit-icon">✏️</div>
     </div>
   </div>
-  
-  <!-- Inline edit modal -->
+
   <div class="edit-modal" id="editModal">
     <div class="edit-title">Edit Search Term</div>
     <div class="edit-input-wrap">
@@ -791,26 +647,24 @@
       <button class="edit-btn apply" id="editApply">Update</button>
     </div>
   </div>
-  
+
   <div class="scan-frame">
     <div class="corner-bl"></div>
     <div class="corner-br"></div>
     <div class="scan-line"></div>
   </div>
-  
+
   <div class="scan-stats" id="scanStats">Scans: 0<br>Reads: —</div>
   <div class="ocr-preview" id="ocrPreview"></div>
-  
-  <!-- Live matches pill (expands to list on tap) -->
-  <button class="matches-pill" id="matchesPill" aria-label="View matches found in this session">
+
+  <button class="matches-pill" id="matchesPill" aria-label="View matches">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="4 12 10 18 20 6"/>
     </svg>
     <span>Matches</span>
     <span class="pill-count" id="matchesPillCount">0</span>
   </button>
-  
-  <!-- Matches list modal -->
+
   <div class="matches-modal" id="matchesModal">
     <div class="matches-header">
       <button class="back-btn" id="matchesCloseBtn">←</button>
@@ -819,7 +673,7 @@
     </div>
     <div class="matches-content" id="matchesContent"></div>
   </div>
-  
+
   <div class="settings-panel" id="settingsPanel">
     <div class="setting-row">
       <div>
@@ -850,24 +704,24 @@
       <div class="toggle" id="toggleWholeWord"></div>
     </div>
   </div>
-  
+
   <div class="status-bar">
     <div class="status-text" id="statusText">Hold phone vertical. Point at shelf.</div>
     <div class="controls">
-      <button class="ctrl-btn" id="pauseBtn" aria-label="Pause scanning">
+      <button class="ctrl-btn" id="pauseBtn" aria-label="Pause">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <rect x="6" y="5" width="4" height="14" rx="1"/>
           <rect x="14" y="5" width="4" height="14" rx="1"/>
         </svg>
         <span class="btn-label">Pause</span>
       </button>
-      <button class="ctrl-btn" id="torchBtn" aria-label="Toggle flashlight">
+      <button class="ctrl-btn" id="torchBtn" aria-label="Flashlight">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M7 2h10l-1 7h-3l2 13-8-10h3l-3-10z"/>
         </svg>
         <span class="btn-label">Flash</span>
       </button>
-      <button class="ctrl-btn snap" id="snapBtn" aria-label="Capture shelf snapshot">
+      <button class="ctrl-btn snap" id="snapBtn" aria-label="Snap">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
           <circle cx="12" cy="13" r="4"/>
@@ -883,18 +737,15 @@
       </button>
     </div>
   </div>
-  
-  <!-- Snap results modal -->
+
   <div class="snap-modal" id="snapModal">
     <div class="snap-header">
       <button class="back-btn" id="snapCloseBtn">←</button>
       <div class="snap-title">📸 Shelf Snapshot</div>
     </div>
-    <div class="snap-content" id="snapContent">
-      <!-- Filled dynamically -->
-    </div>
+    <div class="snap-content" id="snapContent"></div>
   </div>
-  
+
   <div class="loader-overlay" id="loader">
     <div class="spinner"></div>
     <div class="loader-text" id="loaderText">Preparing scanner...</div>
@@ -909,12 +760,10 @@
     <div class="page-title">📜 History</div>
     <button class="clear-btn" id="clearHistoryBtn">Clear</button>
   </div>
-  <div class="history-list" id="historyList">
-    <!-- Filled dynamically -->
-  </div>
+  <div class="history-list" id="historyList"></div>
 </div>
 
-<!-- Exit confirmation dialog -->
+<!-- Exit dialog -->
 <div class="exit-backdrop" id="exitBackdrop" style="display:none;">
   <div class="exit-dialog">
     <div class="exit-icon">
@@ -934,11 +783,13 @@
 </div>
 
 <script>
+'use strict';
+
 // ============ State ============
 const state = {
   searchTerm: '',
   recentSearches: [],
-  history: [], // { type: 'find'|'snap', term, book, books[], timestamp, imageData }
+  history: [],
   stream: null,
   worker: null,
   scanning: false,
@@ -954,10 +805,146 @@ const state = {
   lastMatchedOrient: null,
   recognition: null,
   speechTarget: null,
-  sessionMatches: [], // { book, term, orientation, timestamp }
+  sessionMatches: [],
 };
 
-// ============ Speech Recognition Setup ============
+const navStack = [];
+
+// ============ Helpers ============
+function $(id) { return document.getElementById(id); }
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function updateStatus(text) { $('statusText').textContent = text; }
+function showLoader(text) {
+  $('loader').style.display = 'flex';
+  $('loaderText').textContent = text;
+  $('loaderProgress').textContent = '';
+}
+function hideLoader() { $('loader').style.display = 'none'; }
+function showToast(msg) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
+function formatTime(ts) {
+  const diff = Date.now() - ts;
+  if (diff < 60000) return 'Just now';
+  if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+  if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+  return new Date(ts).toLocaleString();
+}
+
+// ============ Navigation ============
+function pushState(screen) {
+  navStack.push(screen);
+  history.pushState({ screen, depth: navStack.length }, '');
+}
+
+function initNav() {
+  if (!history.state || history.state.app !== 'bookspotter') {
+    history.replaceState({ app: 'bookspotter', screen: 'home', depth: 0 }, '');
+  }
+  navStack.length = 0;
+}
+
+function openScannerScreen() {
+  $('home').classList.remove('active');
+  $('scanner').classList.add('active');
+  pushState('scanner');
+}
+function openHistoryScreen() {
+  $('home').classList.remove('active');
+  $('history').classList.add('active');
+  renderHistory();
+  pushState('history');
+}
+function openEditModal() {
+  $('editInput').value = state.searchTerm;
+  $('editModal').classList.add('open');
+  state.paused = true;
+  setTimeout(() => $('editInput').focus(), 50);
+  pushState('editModal');
+}
+function openSnapModal() {
+  $('snapModal').classList.add('open');
+  pushState('snapModal');
+}
+function openMatchesModal() {
+  renderMatchesModal();
+  $('matchesModal').classList.add('open');
+  pushState('matchesModal');
+}
+function openSettingsPanel() {
+  const panel = $('settingsPanel');
+  if (panel.classList.contains('open')) {
+    if (navStack[navStack.length - 1] === 'settings') history.back();
+    else panel.classList.remove('open');
+  } else {
+    panel.classList.add('open');
+    pushState('settings');
+  }
+}
+
+function closeScannerScreen() {
+  const foundCount = state.sessionMatches.length;
+  stopScanning();
+  $('scanner').classList.remove('active');
+  $('home').classList.add('active');
+  $('settingsPanel').classList.remove('open');
+  $('editModal').classList.remove('open');
+  $('snapModal').classList.remove('open');
+  $('matchesModal').classList.remove('open');
+  $('matchesPill').classList.remove('visible');
+  if (foundCount > 0) showSessionSummary(foundCount);
+  state.sessionMatches = [];
+  updateMatchesPill();
+}
+function closeHistoryScreen() {
+  $('history').classList.remove('active');
+  $('home').classList.add('active');
+}
+function closeEditModalOnly() {
+  $('editModal').classList.remove('open');
+  state.paused = false;
+  try { $('editInput').blur(); } catch(e) {}
+}
+function closeSnapModalOnly() {
+  $('snapModal').classList.remove('open');
+  state.paused = false;
+}
+function closeSettingsOnly() { $('settingsPanel').classList.remove('open'); }
+function closeMatchesModalOnly() { $('matchesModal').classList.remove('open'); }
+
+window.addEventListener('popstate', function() {
+  // If exit dialog is open, close it instead of navigating
+  const backdrop = $('exitBackdrop');
+  if (backdrop && backdrop.style.display === 'flex') {
+    hideExitConfirmation();
+    history.pushState({ app: 'bookspotter', screen: 'home', depth: 0 }, '');
+    return;
+  }
+  const popped = navStack.pop();
+  if (popped === 'scanner') closeScannerScreen();
+  else if (popped === 'history') closeHistoryScreen();
+  else if (popped === 'editModal') closeEditModalOnly();
+  else if (popped === 'snapModal') closeSnapModalOnly();
+  else if (popped === 'matchesModal') closeMatchesModalOnly();
+  else if (popped === 'settings') closeSettingsOnly();
+  else showExitConfirmation();
+});
+
+function showExitConfirmation() {
+  history.pushState({ app: 'bookspotter', screen: 'home', depth: 0 }, '');
+  $('exitBackdrop').style.display = 'flex';
+}
+function hideExitConfirmation() { $('exitBackdrop').style.display = 'none'; }
+
+// ============ Speech ============
 function initSpeech() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SR) return null;
@@ -968,17 +955,11 @@ function initSpeech() {
   rec.maxAlternatives = 1;
   return rec;
 }
-
 function startListening(target) {
   if (!state.recognition) state.recognition = initSpeech();
-  if (!state.recognition) {
-    showToast('Voice input not supported on this browser');
-    return;
-  }
+  if (!state.recognition) { showToast('Voice input not supported'); return; }
   state.speechTarget = target;
-  const btnId = target === 'main' ? 'micBtn' : 'editMic';
-  const btn = document.getElementById(btnId);
-  
+  const btn = $(target === 'main' ? 'micBtn' : 'editMic');
   try {
     state.recognition.start();
     btn.classList.add('listening');
@@ -986,82 +967,59 @@ function startListening(target) {
     try { state.recognition.stop(); } catch(e2) {}
     return;
   }
-  
-  state.recognition.onresult = (e) => {
+  state.recognition.onresult = function(e) {
     const transcript = e.results[0][0].transcript.trim();
-    if (target === 'main') {
-      document.getElementById('searchInput').value = transcript;
-    } else {
-      document.getElementById('editInput').value = transcript;
-    }
+    $(target === 'main' ? 'searchInput' : 'editInput').value = transcript;
   };
-  state.recognition.onerror = (e) => {
-    console.error('Speech error:', e.error);
-    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-      showToast('Please allow microphone access');
-    } else if (e.error === 'no-speech') {
-      showToast('Didn\'t catch that — try again');
-    }
+  state.recognition.onerror = function(e) {
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') showToast('Please allow microphone access');
+    else if (e.error === 'no-speech') showToast("Didn't catch that — try again");
     stopListening();
   };
-  state.recognition.onend = () => stopListening();
+  state.recognition.onend = stopListening;
 }
-
 function stopListening() {
-  const mainBtn = document.getElementById('micBtn');
-  const editBtn = document.getElementById('editMic');
-  mainBtn.classList.remove('listening');
-  editBtn.classList.remove('listening');
+  $('micBtn').classList.remove('listening');
+  $('editMic').classList.remove('listening');
   state.speechTarget = null;
 }
 
-// ============ Home Screen Logic ============
-const searchInput = document.getElementById('searchInput');
-const startScanBtn = document.getElementById('startScanBtn');
-const recentArea = document.getElementById('recentArea');
-const recentChips = document.getElementById('recentChips');
-
+// ============ Home ============
 function renderRecent() {
+  const recentArea = $('recentArea');
+  const recentChips = $('recentChips');
   if (state.recentSearches.length === 0) { recentArea.style.display = 'none'; return; }
   recentArea.style.display = 'block';
   recentChips.innerHTML = '';
-  state.recentSearches.slice(0, 5).forEach(term => {
+  state.recentSearches.slice(0, 5).forEach(function(term) {
     const chip = document.createElement('div');
     chip.className = 'chip';
     chip.textContent = term;
-    chip.onclick = () => { searchInput.value = term; startScan(); };
+    chip.onclick = function() { $('searchInput').value = term; startScan(); };
     recentChips.appendChild(chip);
   });
 }
-
 function addRecent(term) {
-  state.recentSearches = [term, ...state.recentSearches.filter(t => t !== term)].slice(0, 8);
+  state.recentSearches = [term].concat(state.recentSearches.filter(function(t) { return t !== term; })).slice(0, 8);
   renderRecent();
 }
 
-startScanBtn.addEventListener('click', startScan);
-searchInput.addEventListener('keypress', e => { if (e.key === 'Enter') startScan(); });
-document.getElementById('micBtn').addEventListener('click', () => startListening('main'));
-document.getElementById('openHistoryBtn').addEventListener('click', openHistoryScreen);
-
 // ============ Scan Start ============
 async function startScan() {
-  const term = searchInput.value.trim();
-  if (!term) { showToast('Please enter a search term'); searchInput.focus(); return; }
-  
+  const term = $('searchInput').value.trim();
+  if (!term) { showToast('Please enter a search term'); $('searchInput').focus(); return; }
+
   state.searchTerm = term;
   addRecent(term);
-  document.getElementById('currentSearch').textContent = term;
-  
-  document.getElementById('home').classList.remove('active');
-  document.getElementById('scanner').classList.add('active');
-  pushState('scanner');
-  
-  // If already have a stream, just update search term
+  $('currentSearch').textContent = term;
+
+  if (!$('scanner').classList.contains('active')) {
+    openScannerScreen();
+  }
+
   if (state.stream && state.scanning) return;
-  
+
   showLoader('Requesting camera access...');
-  
   try {
     state.stream = await navigator.mediaDevices.getUserMedia({
       video: {
@@ -1071,30 +1029,29 @@ async function startScan() {
       },
       audio: false
     });
-    
-    const video = document.getElementById('video');
+
+    const video = $('video');
     video.srcObject = state.stream;
     state.track = state.stream.getVideoTracks()[0];
-    await new Promise(res => video.onloadedmetadata = res);
-    
+    await new Promise(function(res) { video.onloadedmetadata = res; });
+
     try {
       const caps = state.track.getCapabilities ? state.track.getCapabilities() : {};
       const constraints = { advanced: [] };
       if (caps.focusMode && caps.focusMode.includes('continuous')) constraints.advanced.push({ focusMode: 'continuous' });
       if (caps.exposureMode && caps.exposureMode.includes('continuous')) constraints.advanced.push({ exposureMode: 'continuous' });
       if (constraints.advanced.length) await state.track.applyConstraints(constraints);
-      if (!caps.torch) document.getElementById('torchBtn').style.opacity = '0.4';
+      if (!caps.torch) $('torchBtn').style.opacity = '0.4';
     } catch(e) {}
-    
+
     showLoader('Loading text recognition engine...');
     await initOCR();
-    
+
     hideLoader();
     state.scanning = true;
     state.paused = false;
     updateStatus('Hold phone vertical • Pan slowly');
     scanLoop();
-    
   } catch (err) {
     hideLoader();
     console.error('Camera error:', err);
@@ -1106,31 +1063,26 @@ function showError(err) {
   let title = 'Camera Error';
   let msg = err.message || 'Could not access camera.';
   if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-    title = 'Camera Permission Denied'; msg = 'Please allow camera access in your browser settings.';
+    title = 'Camera Permission Denied'; msg = 'Please allow camera access.';
   } else if (err.name === 'NotFoundError') { title = 'No Camera Found'; msg = 'No camera detected.'; }
-  else if (err.name === 'NotReadableError') { title = 'Camera In Use'; msg = 'The camera is being used by another app.'; }
-  
-  const scanner = document.getElementById('scanner');
-  scanner.innerHTML = `
-    <div class="scanner-header"><button class="back-btn" onclick="goHome()">←</button></div>
-    <div style="flex:1;display:flex;align-items:center;justify-content:center;">
-      <div class="error-box">
-        <div class="error-title">${title}</div>
-        <div class="error-msg">${msg}</div>
-        <button class="ctrl-btn primary" style="margin-top:16px;" onclick="goHome()">Go Back</button>
-      </div>
-    </div>`;
+  else if (err.name === 'NotReadableError') { title = 'Camera In Use'; msg = 'Camera is being used by another app.'; }
+  const scanner = $('scanner');
+  scanner.innerHTML = '<div class="scanner-header"><button class="back-btn" onclick="history.back()">←</button></div>' +
+    '<div style="flex:1;display:flex;align-items:center;justify-content:center;">' +
+    '<div class="error-box"><div class="error-title">' + title + '</div>' +
+    '<div class="error-msg">' + msg + '</div>' +
+    '<button class="ctrl-btn" style="margin-top:16px;" onclick="history.back()">Go Back</button></div></div>';
 }
 
-// ============ OCR Init ============
+// ============ OCR ============
 async function initOCR() {
   if (state.worker) return;
   state.worker = await Tesseract.createWorker('eng', 1, {
-    logger: m => {
+    logger: function(m) {
       if (m.status === 'recognizing text') {
-        document.getElementById('loaderProgress').textContent = `${Math.round(m.progress * 100)}%`;
+        $('loaderProgress').textContent = Math.round(m.progress * 100) + '%';
       } else if (m.status) {
-        document.getElementById('loaderText').textContent = m.status.charAt(0).toUpperCase() + m.status.slice(1);
+        $('loaderText').textContent = m.status.charAt(0).toUpperCase() + m.status.slice(1);
       }
     }
   });
@@ -1140,25 +1092,22 @@ async function initOCR() {
   });
 }
 
-// ============ Image Processing ============
+// ============ Image processing ============
 function captureFrame() {
-  const video = document.getElementById('video');
+  const video = $('video');
   if (video.readyState < 2) return null;
-  const vw = video.videoWidth;
-  const vh = video.videoHeight;
+  const vw = video.videoWidth, vh = video.videoHeight;
   const cropW = Math.floor(vw * 0.80);
   const cropH = Math.floor(vh * 0.60);
   const cropX = Math.floor((vw - cropW) / 2);
   const cropY = Math.floor((vh - cropH) / 2);
   const canvas = document.createElement('canvas');
   canvas.width = cropW; canvas.height = cropH;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
-  return { canvas, cropX, cropY, vw, vh };
+  canvas.getContext('2d').drawImage(video, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+  return { canvas: canvas, cropX: cropX, cropY: cropY, vw: vw, vh: vh };
 }
-
 function captureFullFrame() {
-  const video = document.getElementById('video');
+  const video = $('video');
   if (video.readyState < 2) return null;
   const canvas = document.createElement('canvas');
   canvas.width = video.videoWidth;
@@ -1166,7 +1115,6 @@ function captureFullFrame() {
   canvas.getContext('2d').drawImage(video, 0, 0);
   return canvas;
 }
-
 function enhance(canvas) {
   if (!state.contrast) return canvas;
   const ctx = canvas.getContext('2d');
@@ -1188,38 +1136,24 @@ function enhance(canvas) {
   ctx.putImageData(imgData, 0, 0);
   return canvas;
 }
-
-function rotateCanvas(srcCanvas, degrees) {
+function rotateCanvas(src, degrees) {
   const out = document.createElement('canvas');
   const ctx = out.getContext('2d');
-  const { width: w, height: h } = srcCanvas;
-  if (degrees === 90) {
-    out.width = h; out.height = w;
-    ctx.translate(h, 0); ctx.rotate(Math.PI / 2);
-    ctx.drawImage(srcCanvas, 0, 0);
-  } else if (degrees === 180) {
-    out.width = w; out.height = h;
-    ctx.translate(w, h); ctx.rotate(Math.PI);
-    ctx.drawImage(srcCanvas, 0, 0);
-  } else if (degrees === 270) {
-    out.width = h; out.height = w;
-    ctx.translate(0, w); ctx.rotate(-Math.PI / 2);
-    ctx.drawImage(srcCanvas, 0, 0);
-  } else {
-    out.width = w; out.height = h;
-    ctx.drawImage(srcCanvas, 0, 0);
-  }
+  const w = src.width, h = src.height;
+  if (degrees === 90) { out.width = h; out.height = w; ctx.translate(h, 0); ctx.rotate(Math.PI / 2); ctx.drawImage(src, 0, 0); }
+  else if (degrees === 180) { out.width = w; out.height = h; ctx.translate(w, h); ctx.rotate(Math.PI); ctx.drawImage(src, 0, 0); }
+  else if (degrees === 270) { out.width = h; out.height = w; ctx.translate(0, w); ctx.rotate(-Math.PI / 2); ctx.drawImage(src, 0, 0); }
+  else { out.width = w; out.height = h; ctx.drawImage(src, 0, 0); }
   return out;
 }
-
-function upscaleIfSmall(canvas, minDim = 1000) {
-  const { width, height } = canvas;
-  const maxDim = Math.max(width, height);
+function upscaleIfSmall(canvas, minDim) {
+  minDim = minDim || 1000;
+  const maxDim = Math.max(canvas.width, canvas.height);
   if (maxDim >= minDim) return canvas;
   const scale = minDim / maxDim;
   const out = document.createElement('canvas');
-  out.width = Math.floor(width * scale);
-  out.height = Math.floor(height * scale);
+  out.width = Math.floor(canvas.width * scale);
+  out.height = Math.floor(canvas.height * scale);
   const ctx = out.getContext('2d');
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
@@ -1227,161 +1161,64 @@ function upscaleIfSmall(canvas, minDim = 1000) {
   return out;
 }
 
-// ============ Scan Loop ============
+// ============ Scan loop ============
 async function scanLoop() {
   if (!state.scanning) return;
   if (state.paused) { setTimeout(scanLoop, 300); return; }
-  
   const frame = captureFrame();
   if (!frame) { setTimeout(scanLoop, 200); return; }
-  
   try {
     if (!hasTextFeatures(frame.canvas)) {
       updateStatus('👁️ Move closer or improve lighting');
-      document.getElementById('scanStats').innerHTML = `Scans: ${state.scanCount}<br>No text`;
+      $('scanStats').innerHTML = 'Scans: ' + state.scanCount + '<br>No text';
       setTimeout(scanLoop, 150);
       return;
     }
-    
     let orientations;
     if (state.multiAngle) {
-      const preferred = state.lastMatchedOrient;
-      if (preferred !== null && preferred !== undefined) {
-        orientations = [preferred, ...[0, 90, 270, 180].filter(d => d !== preferred)];
-      } else {
-        orientations = [0, 90, 270, 180];
-      }
+      const p = state.lastMatchedOrient;
+      if (p !== null && p !== undefined) {
+        orientations = [p].concat([0, 90, 270, 180].filter(function(d) { return d !== p; }));
+      } else { orientations = [0, 90, 270, 180]; }
     } else { orientations = [0]; }
-    
+
     let bestMatch = null;
-    let allText = [];
-    
-    for (const deg of orientations) {
+    const allText = [];
+    for (let oi = 0; oi < orientations.length; oi++) {
       if (!state.scanning || state.paused) break;
+      const deg = orientations[oi];
       let work = document.createElement('canvas');
       work.width = frame.canvas.width; work.height = frame.canvas.height;
       work.getContext('2d').drawImage(frame.canvas, 0, 0);
       work = enhance(work);
       if (deg !== 0) work = rotateCanvas(work, deg);
       work = upscaleIfSmall(work, 1200);
-      
       const result = await state.worker.recognize(work);
       const text = (result.data.text || '').trim();
       state.scanCount++;
-      
       if (text.length > 1) {
-        allText.push({ deg, text: text.slice(0, 60), fullText: text });
-        const matched = fuzzyMatch(state.searchTerm, text);
-        if (matched) {
-          bestMatch = { deg, text, words: result.data.words || [] };
+        allText.push({ deg: deg, text: text.slice(0, 60) });
+        if (fuzzyMatch(state.searchTerm, text)) {
+          bestMatch = { deg: deg, text: text };
           break;
         }
       }
     }
-    
     updateStatsUI(allText);
-    
     if (bestMatch && Date.now() - state.lastFoundAt > 1500) {
       state.lastFoundAt = Date.now();
       state.lastMatchedOrient = bestMatch.deg;
       const bookTitle = extractBookTitle(bestMatch.text, state.searchTerm);
-      // Check for duplicate — only show popup & save if genuinely new
       if (!isDuplicateMatch(bookTitle)) {
         addSessionMatch(bookTitle, bestMatch.deg);
         triggerFoundFeedback(bookTitle, bestMatch.deg);
         addToHistory({ type: 'find', term: state.searchTerm, book: bookTitle, timestamp: Date.now() });
       } else {
-        // Silent — just pulse the matches pill so user knows it's still working
         pulseMatchesPill();
       }
     }
-    
-  } catch (e) { console.error('Scan error:', e); }
-  
+  } catch(e) { console.error('Scan error:', e); }
   setTimeout(scanLoop, 80);
-}
-
-// Deduplicate using fuzzy comparison against already-found books
-function isDuplicateMatch(newTitle) {
-  const newNorm = normalize(newTitle);
-  if (!newNorm) return true;
-  for (const m of state.sessionMatches) {
-    const existingNorm = normalize(m.book);
-    // Consider duplicate if substantially overlapping
-    if (newNorm === existingNorm) return true;
-    if (newNorm.length > 5 && existingNorm.includes(newNorm)) return true;
-    if (existingNorm.length > 5 && newNorm.includes(existingNorm)) return true;
-    // Fuzzy: high similarity
-    if (newNorm.length >= 6 && existingNorm.length >= 6) {
-      const maxLen = Math.max(newNorm.length, existingNorm.length);
-      const dist = editDistance(newNorm, existingNorm);
-      if (dist / maxLen < 0.2) return true; // less than 20% different
-    }
-  }
-  return false;
-}
-
-function addSessionMatch(book, orientation) {
-  state.sessionMatches.unshift({
-    book, term: state.searchTerm, orientation, timestamp: Date.now()
-  });
-  updateMatchesPill();
-}
-
-function updateMatchesPill() {
-  const pill = document.getElementById('matchesPill');
-  const count = document.getElementById('matchesPillCount');
-  const modalCount = document.getElementById('matchesModalCount');
-  const n = state.sessionMatches.length;
-  count.textContent = n;
-  if (modalCount) modalCount.textContent = n;
-  if (n > 0) {
-    pill.classList.add('visible');
-  } else {
-    pill.classList.remove('visible');
-  }
-}
-
-function pulseMatchesPill() {
-  const pill = document.getElementById('matchesPill');
-  if (!pill.classList.contains('visible')) return;
-  pill.classList.remove('pulse');
-  void pill.offsetWidth; // force reflow
-  pill.classList.add('pulse');
-  setTimeout(() => pill.classList.remove('pulse'), 600);
-}
-
-function clearSessionMatches() {
-  state.sessionMatches = [];
-  updateMatchesPill();
-  renderMatchesModal();
-}
-
-function renderMatchesModal() {
-  const content = document.getElementById('matchesContent');
-  if (state.sessionMatches.length === 0) {
-    content.innerHTML = `
-      <div class="matches-empty">
-        <div style="font-size:40px;margin-bottom:10px;opacity:0.4;">📭</div>
-        <div>No matches yet</div>
-        <div style="font-size:12px;margin-top:6px;">Books you find will appear here</div>
-      </div>`;
-    return;
-  }
-  content.innerHTML = state.sessionMatches.map((m, i) => {
-    const orientText = m.orientation === 0 ? 'Horizontal'
-      : m.orientation === 90 ? 'Top → Bottom'
-      : m.orientation === 270 ? 'Bottom → Top' : 'Inverted';
-    const timeAgo = formatTime(m.timestamp);
-    return `
-      <div class="match-item">
-        <div class="match-item-num">${i + 1}</div>
-        <div class="match-item-body">
-          <div class="match-item-title">${escapeHtml(m.book)}</div>
-          <div class="match-item-meta">🔍 ${escapeHtml(m.term)} • 📖 ${orientText} • ${timeAgo}</div>
-        </div>
-      </div>`;
-  }).join('');
 }
 
 function hasTextFeatures(canvas) {
@@ -1405,14 +1242,11 @@ function hasTextFeatures(canvas) {
 }
 
 function extractBookTitle(fullText, searchTerm) {
-  const lines = fullText.split(/[\n\r]+/).map(l => l.trim()).filter(l => l.length > 0);
+  const lines = fullText.split(/[\n\r]+/).map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 0; });
   if (lines.length === 0) return searchTerm;
-  
-  let best = null;
-  let bestScore = -Infinity;
-  
-  for (const line of lines) {
-    const clean = line.replace(/[^A-Za-z0-9\s\-':&.,]/g, ' ').replace(/\s+/g, ' ').trim();
+  let best = null, bestScore = -Infinity;
+  for (let i = 0; i < lines.length; i++) {
+    const clean = lines[i].replace(/[^A-Za-z0-9\s\-':&.,]/g, ' ').replace(/\s+/g, ' ').trim();
     if (clean.length < 3) continue;
     const hasTerm = fuzzyMatch(searchTerm, clean);
     const letters = (clean.match(/[A-Za-z]/g) || []).length;
@@ -1425,7 +1259,6 @@ function extractBookTitle(fullText, searchTerm) {
     if (/^[A-Z]/.test(clean)) score += 5;
     if (score > bestScore) { bestScore = score; best = clean; }
   }
-  
   if (!best) return searchTerm;
   best = best.replace(/^[^A-Za-z0-9]+/, '').replace(/[^A-Za-z0-9.]+$/, '').trim();
   if (best.length > 60) best = best.slice(0, 57) + '...';
@@ -1433,20 +1266,18 @@ function extractBookTitle(fullText, searchTerm) {
 }
 
 function updateStatsUI(allText) {
-  document.getElementById('scanStats').innerHTML = 
-    `Scans: ${state.scanCount}<br>Reads: ${allText.length}`;
+  $('scanStats').innerHTML = 'Scans: ' + state.scanCount + '<br>Reads: ' + allText.length;
   if (state.preview && allText.length > 0) {
-    const combined = allText.filter(t => t.text.length > 2)
-      .map(t => `[${t.deg}°] ${t.text}`).join('\n');
-    document.getElementById('ocrPreview').textContent = combined || 'No text';
-    document.getElementById('ocrPreview').style.display = 'block';
+    const combined = allText.filter(function(t) { return t.text.length > 2; })
+      .map(function(t) { return '[' + t.deg + '°] ' + t.text; }).join('\n');
+    $('ocrPreview').textContent = combined || 'No text';
+    $('ocrPreview').style.display = 'block';
   } else {
-    document.getElementById('ocrPreview').style.display = 'none';
+    $('ocrPreview').style.display = 'none';
   }
-  if (allText.length === 0) {
-    updateStatus('👁️ Scanning...');
-  } else if (!document.querySelector('.found-overlay')) {
-    updateStatus(`Reading... (${allText.length} orientation${allText.length > 1 ? 's' : ''})`);
+  if (allText.length === 0) updateStatus('👁️ Scanning...');
+  else if (!document.querySelector('.match-toast')) {
+    updateStatus('Reading... (' + allText.length + ' orientation' + (allText.length > 1 ? 's' : '') + ')');
   }
 }
 
@@ -1454,57 +1285,36 @@ function updateStatsUI(allText) {
 function normalize(s) {
   return s.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
 }
-
 function fuzzyMatch(needle, haystack) {
-  const n = normalize(needle); const h = normalize(haystack);
+  const n = normalize(needle), h = normalize(haystack);
   if (!n || !h) return false;
-  
   if (state.wholeWord) {
-    // Strict mode: needle must appear as a whole word (bounded by spaces/start/end)
-    // Using regex with word boundaries on normalized text
-    const escaped = n.replace(/[.*+?^${}()|[\]\\]/g, '\\function fuzzyMatch(needle, haystack) {
-  const n = normalize(needle); const h = normalize(haystack);
-  if (!n || !h) return false;
-  if (h.includes(n)) return true;
-  const nWords = n.split(' ').filter(w => w.length >= 3);
-  const hWords = h.split(' ').filter(w => w.length >= 2);
-  for (const nw of nWords) {
-    for (const hw of hWords) {
-      if (hw.includes(nw) || (nw.includes(hw) && hw.length >= 3)) return true;
-      if (nw.length >= 4 && hw.length >= 4) {
-        const maxEdits = Math.max(1, Math.floor(nw.length / 5));
-        if (editDistance(nw, hw) <= maxEdits) return true;
-      }
-    }
-  }
-  return false;
-}');
-    const re = new RegExp(`(^|\\s)${escaped}(\\s|$)`);
+    const escaped = n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp('(^|\\s)' + escaped + '(\\s|$)');
     if (re.test(h)) return true;
-    // Also allow multi-word needle to match with small fuzzy tolerance per word
-    const nWords = n.split(' ').filter(w => w.length >= 3);
+    const nWords = n.split(' ').filter(function(w) { return w.length >= 3; });
     const hWords = h.split(' ');
-    for (const nw of nWords) {
-      let wordMatched = false;
-      for (const hw of hWords) {
-        if (hw === nw) { wordMatched = true; break; }
-        if (nw.length >= 4 && hw.length >= 4) {
+    for (let i = 0; i < nWords.length; i++) {
+      const nw = nWords[i];
+      let matched = false;
+      for (let j = 0; j < hWords.length; j++) {
+        if (hWords[j] === nw) { matched = true; break; }
+        if (nw.length >= 4 && hWords[j].length >= 4) {
           const maxEdits = Math.max(1, Math.floor(nw.length / 6));
-          if (editDistance(nw, hw) <= maxEdits) { wordMatched = true; break; }
+          if (editDistance(nw, hWords[j]) <= maxEdits) { matched = true; break; }
         }
       }
-      if (!wordMatched) return false;
+      if (!matched) return false;
     }
     return nWords.length > 0;
   }
-  
-  // Loose mode (default): substring + fuzzy
-  if (h.includes(n)) return true;
-  const nWords = n.split(' ').filter(w => w.length >= 3);
-  const hWords = h.split(' ').filter(w => w.length >= 2);
-  for (const nw of nWords) {
-    for (const hw of hWords) {
-      if (hw.includes(nw) || (nw.includes(hw) && hw.length >= 3)) return true;
+  if (h.indexOf(n) !== -1) return true;
+  const nWords = n.split(' ').filter(function(w) { return w.length >= 3; });
+  const hWords = h.split(' ').filter(function(w) { return w.length >= 2; });
+  for (let i = 0; i < nWords.length; i++) {
+    for (let j = 0; j < hWords.length; j++) {
+      const nw = nWords[i], hw = hWords[j];
+      if (hw.indexOf(nw) !== -1 || (nw.indexOf(hw) !== -1 && hw.length >= 3)) return true;
       if (nw.length >= 4 && hw.length >= 4) {
         const maxEdits = Math.max(1, Math.floor(nw.length / 5));
         if (editDistance(nw, hw) <= maxEdits) return true;
@@ -1513,12 +1323,12 @@ function fuzzyMatch(needle, haystack) {
   }
   return false;
 }
-
 function editDistance(a, b) {
   if (a === b) return 0;
   if (!a.length) return b.length;
   if (!b.length) return a.length;
-  const dp = Array.from({length: a.length + 1}, (_, i) => [i]);
+  const dp = [];
+  for (let i = 0; i <= a.length; i++) dp.push([i]);
   for (let j = 1; j <= b.length; j++) dp[0][j] = j;
   for (let i = 1; i <= a.length; i++) {
     for (let j = 1; j <= b.length; j++) {
@@ -1528,12 +1338,72 @@ function editDistance(a, b) {
   return dp[a.length][b.length];
 }
 
-// ============ Found Feedback ============
+// ============ Session Matches ============
+function isDuplicateMatch(newTitle) {
+  const n = normalize(newTitle);
+  if (!n) return true;
+  for (let i = 0; i < state.sessionMatches.length; i++) {
+    const e = normalize(state.sessionMatches[i].book);
+    if (n === e) return true;
+    if (n.length > 5 && e.indexOf(n) !== -1) return true;
+    if (e.length > 5 && n.indexOf(e) !== -1) return true;
+    if (n.length >= 6 && e.length >= 6) {
+      const maxLen = Math.max(n.length, e.length);
+      if (editDistance(n, e) / maxLen < 0.2) return true;
+    }
+  }
+  return false;
+}
+function addSessionMatch(book, orientation) {
+  state.sessionMatches.unshift({
+    book: book, term: state.searchTerm, orientation: orientation, timestamp: Date.now()
+  });
+  updateMatchesPill();
+}
+function updateMatchesPill() {
+  const pill = $('matchesPill');
+  const n = state.sessionMatches.length;
+  $('matchesPillCount').textContent = n;
+  const modalCount = $('matchesModalCount');
+  if (modalCount) modalCount.textContent = n;
+  if (n > 0) pill.classList.add('visible');
+  else pill.classList.remove('visible');
+}
+function pulseMatchesPill() {
+  const pill = $('matchesPill');
+  if (!pill.classList.contains('visible')) return;
+  pill.classList.remove('pulse');
+  void pill.offsetWidth;
+  pill.classList.add('pulse');
+  setTimeout(function() { pill.classList.remove('pulse'); }, 600);
+}
+function clearSessionMatches() {
+  state.sessionMatches = [];
+  updateMatchesPill();
+  renderMatchesModal();
+}
+function renderMatchesModal() {
+  const content = $('matchesContent');
+  if (state.sessionMatches.length === 0) {
+    content.innerHTML = '<div class="matches-empty"><div style="font-size:40px;margin-bottom:10px;opacity:0.4;">📭</div><div>No matches yet</div><div style="font-size:12px;margin-top:6px;">Books you find will appear here</div></div>';
+    return;
+  }
+  content.innerHTML = state.sessionMatches.map(function(m, i) {
+    const orient = m.orientation === 0 ? 'Horizontal'
+      : m.orientation === 90 ? 'Top → Bottom'
+      : m.orientation === 270 ? 'Bottom → Top' : 'Inverted';
+    return '<div class="match-item"><div class="match-item-num">' + (i + 1) + '</div>' +
+      '<div class="match-item-body"><div class="match-item-title">' + escapeHtml(m.book) + '</div>' +
+      '<div class="match-item-meta">🔍 ' + escapeHtml(m.term) + ' • 📖 ' + orient + ' • ' + formatTime(m.timestamp) + '</div></div></div>';
+  }).join('');
+}
+
+// ============ Feedback ============
 function triggerFoundFeedback(detectedText, orientation) {
   if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
   try {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    [880, 1100].forEach((freq, i) => {
+    [880, 1100].forEach(function(freq, i) {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.connect(gain); gain.connect(audioCtx.destination);
@@ -1544,41 +1414,36 @@ function triggerFoundFeedback(detectedText, orientation) {
       osc.stop(audioCtx.currentTime + i * 0.08 + 0.12);
     });
   } catch(e) {}
-  
-  // Remove any existing match toast
-  const scanner = document.getElementById('scanner');
+  const scanner = $('scanner');
   const existing = scanner.querySelector('.match-toast');
   if (existing) existing.remove();
-  
-  // Compact toast-style indicator — doesn't block the camera
   const toast = document.createElement('div');
   toast.className = 'match-toast';
-  toast.innerHTML = `
-    <div class="match-toast-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="4 12 10 18 20 6"/>
-      </svg>
-    </div>
-    <div class="match-toast-text">
-      <div class="match-toast-label">Match Found</div>
-      <div class="match-toast-title">${escapeHtml(detectedText)}</div>
-    </div>`;
+  toast.innerHTML = '<div class="match-toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></div>' +
+    '<div class="match-toast-text"><div class="match-toast-label">Match Found</div>' +
+    '<div class="match-toast-title">' + escapeHtml(detectedText) + '</div></div>';
   scanner.appendChild(toast);
-  
-  // Pulse the matches pill
   pulseMatchesPill();
-  
-  // Auto-dismiss after 1.8s
-  setTimeout(() => {
+  setTimeout(function() {
     toast.classList.add('fading');
-    setTimeout(() => toast.remove(), 300);
+    setTimeout(function() { toast.remove(); }, 300);
   }, 1800);
-  
-  updateStatus(`✨ Found "${detectedText.slice(0, 40)}${detectedText.length > 40 ? '...' : ''}"`);
+  updateStatus('✨ Found "' + detectedText.slice(0, 40) + (detectedText.length > 40 ? '...' : '') + '"');
 }
 
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function showSessionSummary(count) {
+  const existing = document.querySelector('.session-summary-toast');
+  if (existing) existing.remove();
+  const el = document.createElement('div');
+  el.className = 'session-summary-toast';
+  el.innerHTML = '<div class="match-toast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg></div>' +
+    '<div><div style="font-size:11px;color:#34d399;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Session Complete</div>' +
+    '<div style="font-size:14px;font-weight:600;margin-top:2px;">Found ' + count + ' book' + (count !== 1 ? 's' : '') + ' • Saved to History</div></div>';
+  document.body.appendChild(el);
+  setTimeout(function() {
+    el.classList.add('fading');
+    setTimeout(function() { el.remove(); }, 300);
+  }, 3000);
 }
 
 // ============ History ============
@@ -1587,308 +1452,122 @@ function addToHistory(entry) {
   if (state.history.length > 100) state.history.length = 100;
   updateHistoryCount();
 }
-
 function updateHistoryCount() {
-  const badge = document.getElementById('historyCount');
+  const badge = $('historyCount');
   if (!badge) return;
-  if (state.history.length > 0) {
-    badge.textContent = state.history.length;
-    badge.style.display = 'inline-block';
-  } else {
-    badge.style.display = 'none';
-  }
+  if (state.history.length > 0) { badge.textContent = state.history.length; badge.style.display = 'inline-block'; }
+  else badge.style.display = 'none';
 }
-
-function openHistory() {
-  openHistoryScreen();
-}
-
-function closeHistory() {
-  history.back();
-}
-
-function goHome() {
-  // Legacy alias — triggers back navigation
-  history.back();
-}
-
-function toggleSettings() {
-  openSettingsPanel();
-}
-
 function renderHistory() {
-  const list = document.getElementById('historyList');
+  const list = $('historyList');
   if (state.history.length === 0) {
-    list.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">📭</div>
-        <div>No history yet</div>
-        <div style="font-size:12px;margin-top:6px;">Books you find will appear here</div>
-      </div>`;
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div>No history yet</div><div style="font-size:12px;margin-top:6px;">Books you find will appear here</div></div>';
     return;
   }
-  
-  list.innerHTML = state.history.map((h, idx) => {
+  list.innerHTML = state.history.map(function(h, idx) {
     const timeAgo = formatTime(h.timestamp);
     if (h.type === 'find') {
-      return `
-        <div class="history-item" data-idx="${idx}" data-term="${escapeHtml(h.term)}">
-          <div class="history-term">🔍 ${escapeHtml(h.term)}</div>
-          <div class="history-book">${escapeHtml(h.book)}</div>
-          <div class="history-time">${timeAgo}</div>
-        </div>`;
+      return '<div class="history-item" data-idx="' + idx + '"><div class="history-term">🔍 ' + escapeHtml(h.term) + '</div>' +
+        '<div class="history-book">' + escapeHtml(h.book) + '</div><div class="history-time">' + timeAgo + '</div></div>';
     } else {
-      return `
-        <div class="history-item snap-type" data-idx="${idx}">
-          <div class="history-term snap">📸 Shelf Snapshot</div>
-          <div class="history-book">${h.books.length} book${h.books.length !== 1 ? 's' : ''} detected</div>
-          <div class="history-books-list">
-            ${h.books.slice(0, 8).map(b => `<div>• ${escapeHtml(b)}</div>`).join('')}
-            ${h.books.length > 8 ? `<div style="color:#6060a0;">...and ${h.books.length - 8} more</div>` : ''}
-          </div>
-          <div class="history-time">${timeAgo}</div>
-        </div>`;
+      return '<div class="history-item snap-type" data-idx="' + idx + '"><div class="history-term snap">📸 Shelf Snapshot</div>' +
+        '<div class="history-book">' + h.books.length + ' book' + (h.books.length !== 1 ? 's' : '') + ' detected</div>' +
+        '<div class="history-books-list">' + h.books.slice(0, 8).map(function(b) { return '<div>• ' + escapeHtml(b) + '</div>'; }).join('') +
+        (h.books.length > 8 ? '<div style="color:#6060a0;">...and ' + (h.books.length - 8) + ' more</div>' : '') + '</div>' +
+        '<div class="history-time">' + timeAgo + '</div></div>';
     }
   }).join('');
-  
-  // Click handlers: tap a find entry to re-search
-  list.querySelectorAll('.history-item').forEach(el => {
-    el.addEventListener('click', () => {
+  Array.prototype.forEach.call(list.querySelectorAll('.history-item'), function(el) {
+    el.addEventListener('click', function() {
       const idx = parseInt(el.dataset.idx);
       const entry = state.history[idx];
       if (entry && entry.type === 'find') {
-        document.getElementById('searchInput').value = entry.term;
-        history.back(); // close history screen via popstate
-        // Wait for popstate to complete then start scan
-        setTimeout(() => startScan(), 100);
+        $('searchInput').value = entry.term;
+        history.back();
+        setTimeout(startScan, 100);
       }
     });
   });
 }
 
-function formatTime(ts) {
-  const diff = Date.now() - ts;
-  if (diff < 60000) return 'Just now';
-  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-  return new Date(ts).toLocaleString();
-}
-
-function closeHistory() {
-  document.getElementById('history').classList.remove('active');
-  document.getElementById('home').classList.add('active');
-}
-
-document.getElementById('historyBackBtn').addEventListener('click', () => history.back());
-document.getElementById('clearHistoryBtn').addEventListener('click', () => {
-  if (state.history.length === 0) { showToast('History is already empty'); return; }
-  state.history = [];
-  renderHistory();
-  updateHistoryCount();
-  showToast('History cleared');
-});
-
-// ============ Snap & Save ============
+// ============ Snap ============
 async function snapAndSave() {
   if (!state.worker) { showToast('Scanner not ready'); return; }
-  const wasPaused = state.paused;
   state.paused = true;
-  
   const fullCanvas = captureFullFrame();
-  if (!fullCanvas) { state.paused = wasPaused; showToast('Could not capture'); return; }
-  
+  if (!fullCanvas) { state.paused = false; showToast('Could not capture'); return; }
   openSnapModal();
-  const snapContent = document.getElementById('snapContent');
-  snapContent.innerHTML = `
-    <div style="text-align:center;padding:40px 20px;">
-      <div class="spinner" style="margin:0 auto 16px;"></div>
-      <div style="color:#a0a0c0;font-size:14px;">Analyzing shelf...</div>
-      <div style="color:#606080;font-size:12px;margin-top:6px;" id="snapProgress">Scanning all orientations</div>
-    </div>`;
-  
+  const snapContent = $('snapContent');
+  snapContent.innerHTML = '<div style="text-align:center;padding:40px 20px;"><div class="spinner" style="margin:0 auto 16px;"></div>' +
+    '<div style="color:#a0a0c0;font-size:14px;">Analyzing shelf...</div>' +
+    '<div style="color:#606080;font-size:12px;margin-top:6px;" id="snapProgress">Scanning all orientations</div></div>';
   try {
     const previewURL = fullCanvas.toDataURL('image/jpeg', 0.7);
-    const allBooks = new Set();
+    const allBooks = [];
     const orientations = [0, 90, 270, 180];
-    
     for (let i = 0; i < orientations.length; i++) {
       const deg = orientations[i];
-      document.getElementById('snapProgress').textContent = 
-        `Scanning orientation ${i + 1}/${orientations.length} (${deg}°)...`;
-      
+      const prog = $('snapProgress');
+      if (prog) prog.textContent = 'Scanning orientation ' + (i + 1) + '/' + orientations.length + ' (' + deg + '°)...';
       let work = document.createElement('canvas');
       work.width = fullCanvas.width; work.height = fullCanvas.height;
       work.getContext('2d').drawImage(fullCanvas, 0, 0);
       work = enhance(work);
       if (deg !== 0) work = rotateCanvas(work, deg);
-      
       const result = await state.worker.recognize(work);
       const text = result.data.text || '';
-      const lines = text.split(/[\n\r]+/).map(l => l.trim()).filter(l => l.length > 2);
-      
-      for (const line of lines) {
-        const clean = line.replace(/[^A-Za-z0-9\s\-':&.,]/g, ' ').replace(/\s+/g, ' ').trim();
+      const lines = text.split(/[\n\r]+/).map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 2; });
+      for (let k = 0; k < lines.length; k++) {
+        const clean = lines[k].replace(/[^A-Za-z0-9\s\-':&.,]/g, ' ').replace(/\s+/g, ' ').trim();
         if (clean.length < 4) continue;
         const letters = (clean.match(/[A-Za-z]/g) || []).length;
         if (letters / clean.length < 0.6) continue;
         if (clean.length > 60) continue;
-        const finalClean = clean.replace(/^[^A-Za-z0-9]+/, '').replace(/[^A-Za-z0-9.]+$/, '').trim();
-        if (finalClean.length >= 4) allBooks.add(finalClean);
+        const final = clean.replace(/^[^A-Za-z0-9]+/, '').replace(/[^A-Za-z0-9.]+$/, '').trim();
+        if (final.length >= 4 && allBooks.indexOf(final) === -1) allBooks.push(final);
       }
     }
-    
-    // Deduplicate similar titles (fuzzy)
-    const booksList = Array.from(allBooks);
     const deduped = [];
-    for (const b of booksList) {
+    for (let i = 0; i < allBooks.length; i++) {
+      const b = allBooks[i];
       let isDup = false;
-      for (const d of deduped) {
-        if (normalize(d).includes(normalize(b)) || normalize(b).includes(normalize(d))) {
-          isDup = true; break;
-        }
+      for (let j = 0; j < deduped.length; j++) {
+        const dn = normalize(deduped[j]), bn = normalize(b);
+        if (dn.indexOf(bn) !== -1 || bn.indexOf(dn) !== -1) { isDup = true; break; }
       }
       if (!isDup) deduped.push(b);
     }
-    
-    // Save to history
-    addToHistory({
-      type: 'snap', books: deduped, timestamp: Date.now(),
-    });
-    
-    // Show results
+    addToHistory({ type: 'snap', books: deduped, timestamp: Date.now() });
     if (deduped.length === 0) {
-      snapContent.innerHTML = `
-        <img class="snap-preview" src="${previewURL}" />
-        <div class="empty-state" style="padding:30px 10px;">
-          <div class="empty-icon">🤷</div>
-          <div>No readable text detected</div>
-          <div style="font-size:12px;margin-top:6px;">Try better lighting or move closer</div>
-        </div>`;
+      snapContent.innerHTML = '<img class="snap-preview" src="' + previewURL + '" />' +
+        '<div class="empty-state" style="padding:30px 10px;"><div class="empty-icon">🤷</div><div>No readable text detected</div>' +
+        '<div style="font-size:12px;margin-top:6px;">Try better lighting or move closer</div></div>';
     } else {
-      snapContent.innerHTML = `
-        <img class="snap-preview" src="${previewURL}" />
-        <div class="snap-count">📚 ${deduped.length} book${deduped.length !== 1 ? 's' : ''} detected • Saved to History</div>
-        ${deduped.map((b, i) => `
-          <div class="snap-book-item">
-            <div class="snap-book-idx">${i + 1}.</div>
-            <div>${escapeHtml(b)}</div>
-          </div>
-        `).join('')}`;
+      snapContent.innerHTML = '<img class="snap-preview" src="' + previewURL + '" />' +
+        '<div class="snap-count">📚 ' + deduped.length + ' book' + (deduped.length !== 1 ? 's' : '') + ' detected • Saved to History</div>' +
+        deduped.map(function(b, i) {
+          return '<div class="snap-book-item"><div class="snap-book-idx">' + (i + 1) + '.</div><div>' + escapeHtml(b) + '</div></div>';
+        }).join('');
     }
-    
     if (navigator.vibrate) navigator.vibrate(100);
-    
-  } catch (e) {
+  } catch(e) {
     console.error('Snap error:', e);
-    snapContent.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div>Scan failed</div></div>`;
+    snapContent.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div>Scan failed</div></div>';
   }
-}
-
-document.getElementById('snapBtn').addEventListener('click', snapAndSave);
-document.getElementById('snapCloseBtn').addEventListener('click', () => history.back());
-
-// ============ Edit Modal (inline search edit) ============
-const editModal = document.getElementById('editModal');
-const editInput = document.getElementById('editInput');
-
-document.getElementById('searchPill').addEventListener('click', () => {
-  openEditModal();
-});
-
-document.getElementById('editCancel').addEventListener('click', () => history.back());
-document.getElementById('editApply').addEventListener('click', applyEdit);
-document.getElementById('editMic').addEventListener('click', () => startListening('edit'));
-editInput.addEventListener('keypress', e => { if (e.key === 'Enter') applyEdit(); });
-
-function applyEdit() {
-  const newTerm = editInput.value.trim();
-  if (!newTerm) { showToast('Please enter a search term'); return; }
-  const changed = newTerm.toLowerCase() !== state.searchTerm.toLowerCase();
-  state.searchTerm = newTerm;
-  addRecent(newTerm);
-  document.getElementById('currentSearch').textContent = newTerm;
-  state.lastMatchedOrient = null;
-  state.lastFoundAt = 0;
-  // Reset session matches if the term actually changed
-  if (changed) {
-    state.sessionMatches = [];
-    updateMatchesPill();
-  }
-  history.back();
-  updateStatus(`🔎 Now searching for: ${newTerm}`);
-  showToast(`Searching for "${newTerm}"`);
 }
 
 // ============ Controls ============
-document.getElementById('backBtn').addEventListener('click', () => history.back());
-document.getElementById('pauseBtn').addEventListener('click', togglePause);
-document.getElementById('torchBtn').addEventListener('click', toggleTorch);
-document.getElementById('settingsBtn').addEventListener('click', openSettingsPanel);
-
-document.getElementById('toggleMultiAngle').addEventListener('click', function() {
-  state.multiAngle = !state.multiAngle;
-  this.classList.toggle('on', state.multiAngle);
-});
-document.getElementById('toggleContrast').addEventListener('click', function() {
-  state.contrast = !state.contrast;
-  this.classList.toggle('on', state.contrast);
-});
-document.getElementById('togglePreview').addEventListener('click', function() {
-  state.preview = !state.preview;
-  this.classList.toggle('on', state.preview);
-  if (!state.preview) document.getElementById('ocrPreview').style.display = 'none';
-});
-document.getElementById('toggleWholeWord').addEventListener('click', function() {
-  state.wholeWord = !state.wholeWord;
-  this.classList.toggle('on', state.wholeWord);
-  showToast(state.wholeWord ? 'Whole word match ON' : 'Whole word match OFF');
-});
-
-// Matches pill + modal
-document.getElementById('matchesPill').addEventListener('click', () => {
-  renderMatchesModal();
-  pushState('matchesModal');
-  document.getElementById('matchesModal').classList.add('open');
-});
-document.getElementById('matchesCloseBtn').addEventListener('click', () => history.back());
-document.getElementById('matchesClearBtn').addEventListener('click', () => {
-  if (state.sessionMatches.length === 0) { showToast('No matches to clear'); return; }
-  clearSessionMatches();
-  showToast('Matches cleared');
-});
-
-function toggleSettings() { document.getElementById('settingsPanel').classList.toggle('open'); }
-
-function goHome() {
-  stopScanning();
-  document.getElementById('scanner').classList.remove('active');
-  document.getElementById('home').classList.add('active');
-  document.getElementById('settingsPanel').classList.remove('open');
-  document.getElementById('editModal').classList.remove('open');
-  document.getElementById('snapModal').classList.remove('open');
-}
-
 function togglePause() {
   state.paused = !state.paused;
-  const btn = document.getElementById('pauseBtn');
+  const btn = $('pauseBtn');
   btn.classList.toggle('paused-state', state.paused);
   if (state.paused) {
-    btn.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-        <polygon points="6 4 20 12 6 20 6 4"/>
-      </svg>
-      <span class="btn-label">Resume</span>`;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><polygon points="6 4 20 12 6 20 6 4"/></svg><span class="btn-label">Resume</span>';
   } else {
-    btn.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-        <rect x="6" y="5" width="4" height="14" rx="1"/>
-        <rect x="14" y="5" width="4" height="14" rx="1"/>
-      </svg>
-      <span class="btn-label">Pause</span>`;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg><span class="btn-label">Pause</span>';
   }
   updateStatus(state.paused ? 'Paused' : 'Scanning...');
 }
-
 async function toggleTorch() {
   if (!state.track) return;
   try {
@@ -1896,224 +1575,97 @@ async function toggleTorch() {
     if (!caps.torch) { showToast('Flashlight not supported'); return; }
     state.torchOn = !state.torchOn;
     await state.track.applyConstraints({ advanced: [{ torch: state.torchOn }] });
-    document.getElementById('torchBtn').classList.toggle('active', state.torchOn);
+    $('torchBtn').classList.toggle('active', state.torchOn);
   } catch(e) { showToast('Could not toggle flashlight'); }
 }
-
 function stopScanning() {
   state.scanning = false;
   if (state.stream) {
-    state.stream.getTracks().forEach(t => t.stop());
+    state.stream.getTracks().forEach(function(t) { t.stop(); });
     state.stream = null;
   }
 }
 
-// ============ UI Helpers ============
-function updateStatus(text) { document.getElementById('statusText').textContent = text; }
-function showLoader(text) {
-  document.getElementById('loader').style.display = 'flex';
-  document.getElementById('loaderText').textContent = text;
-  document.getElementById('loaderProgress').textContent = '';
-}
-function hideLoader() { document.getElementById('loader').style.display = 'none'; }
-function showToast(msg) {
-  const existing = document.querySelector('.toast');
-  if (existing) existing.remove();
-  const toast = document.createElement('div');
-  toast.className = 'toast'; toast.textContent = msg;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 2500);
+function applyEdit() {
+  const newTerm = $('editInput').value.trim();
+  if (!newTerm) { showToast('Please enter a search term'); return; }
+  const changed = newTerm.toLowerCase() !== state.searchTerm.toLowerCase();
+  state.searchTerm = newTerm;
+  addRecent(newTerm);
+  $('currentSearch').textContent = newTerm;
+  state.lastMatchedOrient = null;
+  state.lastFoundAt = 0;
+  if (changed) { state.sessionMatches = []; updateMatchesPill(); }
+  history.back();
+  updateStatus('🔎 Now searching for: ' + newTerm);
+  showToast('Searching for "' + newTerm + '"');
 }
 
-// ============ Navigation Stack & Back Gesture Handling ============
-// We push browser history states on every navigation so the system/browser
-// back gesture is intercepted via 'popstate' and routed to our handlers
-// instead of exiting the app or browser.
-
-const navStack = []; // Stack of screen identifiers
-
-function pushState(screen) {
-  navStack.push(screen);
-  // Push a new history entry so the OS back gesture will fire popstate
-  history.pushState({ screen, depth: navStack.length }, '');
+// ============ Event wiring ============
+document.addEventListener('DOMContentLoaded', wireUp);
+if (document.readyState === 'loading') {
+  // Wait for DOMContentLoaded
+} else {
+  wireUp();
 }
 
-function initNav() {
-  // Anchor state — this represents the "home" baseline.
-  // When user triggers back from here, we show the exit dialog.
-  if (!history.state || history.state.app !== 'bookspotter') {
-    history.replaceState({ app: 'bookspotter', screen: 'home', depth: 0 }, '');
-  }
-  navStack.length = 0;
+function wireUp() {
+  $('startScanBtn').addEventListener('click', startScan);
+  $('searchInput').addEventListener('keypress', function(e) { if (e.key === 'Enter') startScan(); });
+  $('micBtn').addEventListener('click', function() { startListening('main'); });
+  $('openHistoryBtn').addEventListener('click', openHistoryScreen);
+
+  $('historyBackBtn').addEventListener('click', function() { history.back(); });
+  $('clearHistoryBtn').addEventListener('click', function() {
+    if (state.history.length === 0) { showToast('History is already empty'); return; }
+    state.history = []; renderHistory(); updateHistoryCount(); showToast('History cleared');
+  });
+
+  $('backBtn').addEventListener('click', function() { history.back(); });
+  $('pauseBtn').addEventListener('click', togglePause);
+  $('torchBtn').addEventListener('click', toggleTorch);
+  $('snapBtn').addEventListener('click', snapAndSave);
+  $('settingsBtn').addEventListener('click', openSettingsPanel);
+
+  $('toggleMultiAngle').addEventListener('click', function() { state.multiAngle = !state.multiAngle; this.classList.toggle('on', state.multiAngle); });
+  $('toggleContrast').addEventListener('click', function() { state.contrast = !state.contrast; this.classList.toggle('on', state.contrast); });
+  $('togglePreview').addEventListener('click', function() {
+    state.preview = !state.preview; this.classList.toggle('on', state.preview);
+    if (!state.preview) $('ocrPreview').style.display = 'none';
+  });
+  $('toggleWholeWord').addEventListener('click', function() {
+    state.wholeWord = !state.wholeWord; this.classList.toggle('on', state.wholeWord);
+    showToast(state.wholeWord ? 'Whole word match ON' : 'Whole word match OFF');
+  });
+
+  $('searchPill').addEventListener('click', openEditModal);
+  $('editCancel').addEventListener('click', function() { history.back(); });
+  $('editApply').addEventListener('click', applyEdit);
+  $('editMic').addEventListener('click', function() { startListening('edit'); });
+  $('editInput').addEventListener('keypress', function(e) { if (e.key === 'Enter') applyEdit(); });
+
+  $('matchesPill').addEventListener('click', openMatchesModal);
+  $('matchesCloseBtn').addEventListener('click', function() { history.back(); });
+  $('matchesClearBtn').addEventListener('click', function() {
+    if (state.sessionMatches.length === 0) { showToast('No matches to clear'); return; }
+    clearSessionMatches(); showToast('Matches cleared');
+  });
+
+  $('snapCloseBtn').addEventListener('click', function() { history.back(); });
+
+  $('exitCancel').addEventListener('click', hideExitConfirmation);
+  $('exitConfirm').addEventListener('click', function() {
+    hideExitConfirmation();
+    stopScanning();
+    try { window.close(); } catch(e) {}
+    setTimeout(function() { showToast("Press your phone's home button to exit"); }, 300);
+  });
+
+  initNav();
+  renderRecent();
+  updateHistoryCount();
+  $('searchInput').focus();
 }
-
-// ============ Screen open functions ============
-function openScanner() {
-  pushState('scanner');
-  document.getElementById('home').classList.remove('active');
-  document.getElementById('scanner').classList.add('active');
-}
-
-function openHistoryScreen() {
-  pushState('history');
-  document.getElementById('home').classList.remove('active');
-  document.getElementById('history').classList.add('active');
-  renderHistory();
-}
-
-function openEditModal() {
-  pushState('editModal');
-  const editModal = document.getElementById('editModal');
-  const editInput = document.getElementById('editInput');
-  editInput.value = state.searchTerm;
-  editModal.classList.add('open');
-  state.paused = true;
-  setTimeout(() => editInput.focus(), 50);
-}
-
-function openSnapModal() {
-  pushState('snapModal');
-  document.getElementById('snapModal').classList.add('open');
-}
-
-function openSettingsPanel() {
-  const panel = document.getElementById('settingsPanel');
-  const wasOpen = panel.classList.contains('open');
-  if (wasOpen) {
-    panel.classList.remove('open');
-    // Let the popstate close it naturally via history back
-    if (navStack[navStack.length - 1] === 'settings') history.back();
-  } else {
-    pushState('settings');
-    panel.classList.add('open');
-  }
-}
-
-// ============ Close / go-back functions (called by popstate OR by UI buttons) ============
-// Close functions must NOT themselves call history.back() when invoked from popstate.
-
-function closeScannerScreen() {
-  const foundCount = state.sessionMatches.length;
-  stopScanning();
-  document.getElementById('scanner').classList.remove('active');
-  document.getElementById('home').classList.add('active');
-  document.getElementById('settingsPanel').classList.remove('open');
-  document.getElementById('editModal').classList.remove('open');
-  document.getElementById('snapModal').classList.remove('open');
-  document.getElementById('matchesModal').classList.remove('open');
-  document.getElementById('matchesPill').classList.remove('visible');
-  
-  // Session summary if user found anything
-  if (foundCount > 0) {
-    showSessionSummary(foundCount);
-  }
-  // Clear session for next scan session
-  state.sessionMatches = [];
-  updateMatchesPill();
-}
-
-function showSessionSummary(count) {
-  const existing = document.querySelector('.session-summary-toast');
-  if (existing) existing.remove();
-  const el = document.createElement('div');
-  el.className = 'session-summary-toast';
-  el.innerHTML = `
-    <div class="match-toast-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="4 12 10 18 20 6"/>
-      </svg>
-    </div>
-    <div>
-      <div style="font-size:11px;color:#34d399;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Session Complete</div>
-      <div style="font-size:14px;font-weight:600;margin-top:2px;">Found ${count} book${count !== 1 ? 's' : ''} • Saved to History</div>
-    </div>`;
-  document.body.appendChild(el);
-  setTimeout(() => {
-    el.classList.add('fading');
-    setTimeout(() => el.remove(), 300);
-  }, 3000);
-}
-
-function closeHistoryScreen() {
-  document.getElementById('history').classList.remove('active');
-  document.getElementById('home').classList.add('active');
-}
-
-function closeEditModalOnly() {
-  const editInput = document.getElementById('editInput');
-  document.getElementById('editModal').classList.remove('open');
-  state.paused = false;
-  if (editInput) editInput.blur();
-}
-
-function closeSnapModalOnly() {
-  document.getElementById('snapModal').classList.remove('open');
-  state.paused = false;
-}
-
-function closeSettingsOnly() {
-  document.getElementById('settingsPanel').classList.remove('open');
-}
-
-// ============ Unified popstate handler ============
-// Triggered by:
-// - System back gesture (Android)
-// - Browser back button
-// - history.back() call
-window.addEventListener('popstate', (event) => {
-  // Pop the top of our nav stack
-  const popped = navStack.pop();
-  
-  if (popped === 'scanner') {
-    closeScannerScreen();
-  } else if (popped === 'history') {
-    closeHistoryScreen();
-  } else if (popped === 'editModal') {
-    closeEditModalOnly();
-  } else if (popped === 'snapModal') {
-    closeSnapModalOnly();
-  } else if (popped === 'matchesModal') {
-    document.getElementById('matchesModal').classList.remove('open');
-  } else if (popped === 'settings') {
-    closeSettingsOnly();
-  } else {
-    // No app state to pop → user is on home screen and pressed back
-    // Show exit confirmation dialog
-    showExitConfirmation();
-  }
-});
-
-// ============ Exit Confirmation ============
-function showExitConfirmation() {
-  // Put the home state back so we don't actually navigate away until confirmed
-  history.pushState({ app: 'bookspotter', screen: 'home', depth: 0 }, '');
-  document.getElementById('exitBackdrop').style.display = 'flex';
-}
-
-function hideExitConfirmation() {
-  document.getElementById('exitBackdrop').style.display = 'none';
-}
-
-document.getElementById('exitCancel').addEventListener('click', () => {
-  hideExitConfirmation();
-});
-
-document.getElementById('exitConfirm').addEventListener('click', () => {
-  hideExitConfirmation();
-  stopScanning();
-  // Attempt to close (works in standalone PWA installed from Chrome)
-  try { window.close(); } catch(e) {}
-  // Fallback for browsers that block window.close()
-  setTimeout(() => {
-    showToast('Press your phone\'s home button to exit');
-  }, 300);
-});
-
-// ============ Init ============
-initNav();
-renderRecent();
-updateHistoryCount();
-searchInput.focus();
 </script>
 </body>
 </html>
