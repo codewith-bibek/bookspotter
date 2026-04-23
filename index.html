@@ -104,9 +104,11 @@
     background: linear-gradient(135deg, #8b5cf6, #ec4899);
     box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
     transition: transform 0.15s; margin-top: 20px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
   }
   .scan-btn:active { transform: scale(0.97); }
   .scan-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .scan-btn svg { width: 22px; height: 22px; stroke-width: 2.2; }
   
   .tips { margin-top: 24px; font-size: 12px; color: #6060a0; text-align: center; line-height: 1.6; }
   .version {
@@ -599,7 +601,13 @@
   </div>
   
   <div>
-    <button id="startScanBtn" class="scan-btn">Start Scanning 📷</button>
+    <button id="startScanBtn" class="scan-btn">
+      <span>Start Scanning</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+      </svg>
+    </button>
     <div class="tips">
       💡 Hold phone <strong>vertically</strong>, pan <strong>slowly</strong> across spines.<br>
       Keep phone ~30 cm from books. Use light in dim areas.
