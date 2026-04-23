@@ -260,20 +260,99 @@
   
   /* Found overlay */
   .found-overlay {
-    position: absolute; inset: 0; background: rgba(16, 185, 129, 0.2);
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.25) 0%, rgba(0, 0, 0, 0.4) 70%);
     display: flex; align-items: center; justify-content: center; z-index: 20;
     animation: flashIn 0.4s ease-out;
     pointer-events: none;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
   }
-  @keyframes flashIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+  @keyframes flashIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
   .found-card {
-    background: white; color: #1a1a2e; padding: 24px 32px; border-radius: 20px;
-    text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5); max-width: 80%;
+    position: relative;
+    background: linear-gradient(145deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+    border: 1.5px solid rgba(16, 185, 129, 0.5);
+    color: white;
+    padding: 28px 28px 24px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(16, 185, 129, 0.35),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    max-width: 86%;
+    min-width: 260px;
+    animation: foundCardIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.4);
+    overflow: hidden;
   }
-  .found-icon { font-size: 56px; margin-bottom: 8px; }
-  .found-title { font-size: 22px; font-weight: 800; color: #10b981; margin-bottom: 8px; }
-  .found-book { font-size: 15px; color: #4a4a6a; line-height: 1.4; }
-  .found-orient { font-size: 11px; color: #8080a0; margin-top: 6px; }
+  @keyframes foundCardIn {
+    0% { opacity: 0; transform: scale(0.7) translateY(20px); }
+    60% { opacity: 1; transform: scale(1.05) translateY(-4px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  /* Subtle gradient glow accent at top edge */
+  .found-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, #10b981, #34d399, #10b981, transparent);
+    border-radius: 24px 24px 0 0;
+  }
+  .found-check {
+    width: 68px; height: 68px; margin: 0 auto 12px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981, #059669);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow:
+      0 8px 24px rgba(16, 185, 129, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    animation: checkPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.6) 0.1s both;
+  }
+  @keyframes checkPop {
+    0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+    70% { transform: scale(1.15) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  .found-check svg {
+    width: 36px; height: 36px; color: white;
+    stroke-width: 3.5;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+  }
+  .found-title {
+    font-size: 13px; font-weight: 700; letter-spacing: 2px;
+    color: #34d399; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .found-book {
+    font-size: 18px; color: white; line-height: 1.35;
+    font-weight: 600; letter-spacing: -0.2px;
+    padding: 0 4px;
+    word-break: break-word;
+  }
+  .found-divider {
+    width: 40px; height: 2px; margin: 14px auto 10px;
+    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.6), transparent);
+    border-radius: 1px;
+  }
+  .found-meta {
+    font-size: 11px; color: #8b8ba8;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    flex-wrap: wrap;
+  }
+  .found-meta-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    color: #a78bfa;
+    padding: 3px 9px; border-radius: 10px;
+    font-weight: 600; font-size: 10px;
+    letter-spacing: 0.3px;
+  }
   
   /* Loading */
   .loader-overlay {
@@ -1166,18 +1245,26 @@ function triggerFoundFeedback(detectedText, orientation) {
   const existing = scanner.querySelector('.found-overlay');
   if (existing) existing.remove();
   
-  const orientLabel = orientation === 0 ? 'horizontal text'
-    : orientation === 90 ? 'spine reading top→bottom'
-    : orientation === 270 ? 'spine reading bottom→top' : 'upside-down text';
+  const orientLabel = orientation === 0 ? 'Horizontal'
+    : orientation === 90 ? 'Top → Bottom'
+    : orientation === 270 ? 'Bottom → Top' : 'Inverted';
   
   const overlay = document.createElement('div');
   overlay.className = 'found-overlay';
   overlay.innerHTML = `
     <div class="found-card">
-      <div class="found-icon">✅</div>
-      <div class="found-title">Found!</div>
+      <div class="found-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="4 12 10 18 20 6"/>
+        </svg>
+      </div>
+      <div class="found-title">Book Found</div>
       <div class="found-book">${escapeHtml(detectedText)}</div>
-      <div class="found-orient">Matched "${escapeHtml(state.searchTerm)}" • ${orientLabel}</div>
+      <div class="found-divider"></div>
+      <div class="found-meta">
+        Matched <span class="found-meta-pill">🔍 ${escapeHtml(state.searchTerm)}</span>
+        <span class="found-meta-pill">📖 ${orientLabel}</span>
+      </div>
     </div>`;
   scanner.appendChild(overlay);
   setTimeout(() => overlay.remove(), 3000);
