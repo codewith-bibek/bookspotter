@@ -260,6 +260,144 @@
     border-color: rgba(139, 92, 246, 0.6);
   }
   
+  /* Matches pill — live session counter */
+  .matches-pill {
+    position: absolute; top: 76px; left: 50%; transform: translateX(-50%);
+    padding: 8px 14px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.9));
+    border: 1px solid rgba(52, 211, 153, 0.6);
+    border-radius: 20px;
+    font-size: 13px; font-weight: 700; color: white;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    z-index: 8; cursor: pointer; transition: all 0.2s;
+    display: none; align-items: center; gap: 8px;
+    animation: pillIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.4);
+  }
+  .matches-pill.visible { display: inline-flex; }
+  .matches-pill:active { transform: translateX(-50%) scale(0.95); }
+  @keyframes pillIn {
+    from { opacity: 0; transform: translate(-50%, -10px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+  .matches-pill svg { width: 14px; height: 14px; }
+  .matches-pill .pill-count {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 1px 8px; border-radius: 10px; font-size: 12px;
+    min-width: 20px; text-align: center;
+  }
+  .matches-pill.pulse {
+    animation: pillPulse 0.6s ease-out;
+  }
+  @keyframes pillPulse {
+    0% { transform: translateX(-50%) scale(1); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); }
+    50% { transform: translateX(-50%) scale(1.12); box-shadow: 0 4px 24px rgba(16, 185, 129, 0.8); }
+    100% { transform: translateX(-50%) scale(1); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4); }
+  }
+  
+  /* Matches list modal (expanded view) */
+  .matches-modal {
+    position: absolute; inset: 0;
+    background: rgba(10, 10, 20, 0.97);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    z-index: 35; display: none; flex-direction: column;
+    animation: flashIn 0.25s ease-out;
+  }
+  .matches-modal.open { display: flex; }
+  .matches-header {
+    padding: 16px; display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .matches-title { font-size: 17px; font-weight: 700; flex: 1; }
+  .matches-title .count-badge {
+    background: rgba(16, 185, 129, 0.25); color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    padding: 2px 10px; border-radius: 10px; font-size: 12px;
+    margin-left: 8px; font-weight: 700;
+  }
+  .matches-content { flex: 1; overflow-y: auto; padding: 16px; }
+  .match-item {
+    padding: 14px 16px; margin-bottom: 10px;
+    background: rgba(16, 185, 129, 0.06);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-radius: 12px;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .match-item-num {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .match-item-body { flex: 1; min-width: 0; }
+  .match-item-title { font-size: 15px; font-weight: 600; color: white; line-height: 1.35; }
+  .match-item-meta { font-size: 11px; color: #8080a0; margin-top: 4px; }
+  .matches-empty {
+    text-align: center; padding: 40px 20px; color: #6060a0;
+  }
+  
+  /* Small toast-style "new match" indicator */
+  .match-toast {
+    position: absolute; top: 130px; left: 50%; transform: translateX(-50%);
+    padding: 10px 16px;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(22, 33, 62, 0.95));
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 20px rgba(16, 185, 129, 0.3);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    z-index: 19; max-width: 85%;
+    display: flex; align-items: center; gap: 10px;
+    animation: matchToastIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.4);
+    pointer-events: none;
+  }
+  @keyframes matchToastIn {
+    0% { opacity: 0; transform: translate(-50%, -20px) scale(0.9); }
+    60% { opacity: 1; transform: translate(-50%, 3px) scale(1.03); }
+    100% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  }
+  .match-toast.fading { animation: matchToastOut 0.3s ease-in forwards; }
+  @keyframes matchToastOut {
+    to { opacity: 0; transform: translate(-50%, -10px) scale(0.95); }
+  }
+  .match-toast-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #10b981, #059669);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+  }
+  .match-toast-icon svg { width: 16px; height: 16px; color: white; stroke-width: 3.5; }
+  .match-toast-text { min-width: 0; }
+  .match-toast-label {
+    font-size: 10px; font-weight: 700; color: #34d399;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .match-toast-title {
+    font-size: 13px; color: white; font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 220px;
+  }
+  
+  /* Session summary overlay (shown on exit) */
+  .session-summary-toast {
+    position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+    padding: 14px 20px;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.98), rgba(22, 33, 62, 0.98));
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(16, 185, 129, 0.3);
+    z-index: 150; color: white;
+    display: flex; align-items: center; gap: 12px;
+    animation: summaryIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.4);
+  }
+  @keyframes summaryIn {
+    0% { opacity: 0; transform: translate(-50%, -30px); }
+    100% { opacity: 1; transform: translate(-50%, 0); }
+  }
+  .session-summary-toast.fading { animation: summaryOut 0.3s ease-in forwards; }
+  @keyframes summaryOut { to { opacity: 0; transform: translate(-50%, -20px); } }
+  
   /* Found overlay */
   .found-overlay {
     position: absolute; inset: 0;
@@ -663,6 +801,25 @@
   <div class="scan-stats" id="scanStats">Scans: 0<br>Reads: —</div>
   <div class="ocr-preview" id="ocrPreview"></div>
   
+  <!-- Live matches pill (expands to list on tap) -->
+  <button class="matches-pill" id="matchesPill" aria-label="View matches found in this session">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="4 12 10 18 20 6"/>
+    </svg>
+    <span>Matches</span>
+    <span class="pill-count" id="matchesPillCount">0</span>
+  </button>
+  
+  <!-- Matches list modal -->
+  <div class="matches-modal" id="matchesModal">
+    <div class="matches-header">
+      <button class="back-btn" id="matchesCloseBtn">←</button>
+      <div class="matches-title">Session Matches<span class="count-badge" id="matchesModalCount">0</span></div>
+      <button class="clear-btn" id="matchesClearBtn">Clear</button>
+    </div>
+    <div class="matches-content" id="matchesContent"></div>
+  </div>
+  
   <div class="settings-panel" id="settingsPanel">
     <div class="setting-row">
       <div>
@@ -684,6 +841,13 @@
         <div class="setting-desc">See what camera is reading</div>
       </div>
       <div class="toggle on" id="togglePreview"></div>
+    </div>
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">Whole word match</div>
+        <div class="setting-desc">Stricter: "Python" won't match "Pythonic"</div>
+      </div>
+      <div class="toggle" id="toggleWholeWord"></div>
     </div>
   </div>
   
@@ -786,9 +950,11 @@ const state = {
   multiAngle: true,
   contrast: true,
   preview: true,
+  wholeWord: false,
   lastMatchedOrient: null,
-  recognition: null, // Speech recognition instance
-  speechTarget: null, // 'main' or 'edit'
+  recognition: null,
+  speechTarget: null,
+  sessionMatches: [], // { book, term, orientation, timestamp }
 };
 
 // ============ Speech Recognition Setup ============
@@ -1115,18 +1281,107 @@ async function scanLoop() {
     
     updateStatsUI(allText);
     
-    if (bestMatch && Date.now() - state.lastFoundAt > 3000) {
+    if (bestMatch && Date.now() - state.lastFoundAt > 1500) {
       state.lastFoundAt = Date.now();
       state.lastMatchedOrient = bestMatch.deg;
       const bookTitle = extractBookTitle(bestMatch.text, state.searchTerm);
-      triggerFoundFeedback(bookTitle, bestMatch.deg);
-      // Save to history
-      addToHistory({ type: 'find', term: state.searchTerm, book: bookTitle, timestamp: Date.now() });
+      // Check for duplicate — only show popup & save if genuinely new
+      if (!isDuplicateMatch(bookTitle)) {
+        addSessionMatch(bookTitle, bestMatch.deg);
+        triggerFoundFeedback(bookTitle, bestMatch.deg);
+        addToHistory({ type: 'find', term: state.searchTerm, book: bookTitle, timestamp: Date.now() });
+      } else {
+        // Silent — just pulse the matches pill so user knows it's still working
+        pulseMatchesPill();
+      }
     }
     
   } catch (e) { console.error('Scan error:', e); }
   
   setTimeout(scanLoop, 80);
+}
+
+// Deduplicate using fuzzy comparison against already-found books
+function isDuplicateMatch(newTitle) {
+  const newNorm = normalize(newTitle);
+  if (!newNorm) return true;
+  for (const m of state.sessionMatches) {
+    const existingNorm = normalize(m.book);
+    // Consider duplicate if substantially overlapping
+    if (newNorm === existingNorm) return true;
+    if (newNorm.length > 5 && existingNorm.includes(newNorm)) return true;
+    if (existingNorm.length > 5 && newNorm.includes(existingNorm)) return true;
+    // Fuzzy: high similarity
+    if (newNorm.length >= 6 && existingNorm.length >= 6) {
+      const maxLen = Math.max(newNorm.length, existingNorm.length);
+      const dist = editDistance(newNorm, existingNorm);
+      if (dist / maxLen < 0.2) return true; // less than 20% different
+    }
+  }
+  return false;
+}
+
+function addSessionMatch(book, orientation) {
+  state.sessionMatches.unshift({
+    book, term: state.searchTerm, orientation, timestamp: Date.now()
+  });
+  updateMatchesPill();
+}
+
+function updateMatchesPill() {
+  const pill = document.getElementById('matchesPill');
+  const count = document.getElementById('matchesPillCount');
+  const modalCount = document.getElementById('matchesModalCount');
+  const n = state.sessionMatches.length;
+  count.textContent = n;
+  if (modalCount) modalCount.textContent = n;
+  if (n > 0) {
+    pill.classList.add('visible');
+  } else {
+    pill.classList.remove('visible');
+  }
+}
+
+function pulseMatchesPill() {
+  const pill = document.getElementById('matchesPill');
+  if (!pill.classList.contains('visible')) return;
+  pill.classList.remove('pulse');
+  void pill.offsetWidth; // force reflow
+  pill.classList.add('pulse');
+  setTimeout(() => pill.classList.remove('pulse'), 600);
+}
+
+function clearSessionMatches() {
+  state.sessionMatches = [];
+  updateMatchesPill();
+  renderMatchesModal();
+}
+
+function renderMatchesModal() {
+  const content = document.getElementById('matchesContent');
+  if (state.sessionMatches.length === 0) {
+    content.innerHTML = `
+      <div class="matches-empty">
+        <div style="font-size:40px;margin-bottom:10px;opacity:0.4;">📭</div>
+        <div>No matches yet</div>
+        <div style="font-size:12px;margin-top:6px;">Books you find will appear here</div>
+      </div>`;
+    return;
+  }
+  content.innerHTML = state.sessionMatches.map((m, i) => {
+    const orientText = m.orientation === 0 ? 'Horizontal'
+      : m.orientation === 90 ? 'Top → Bottom'
+      : m.orientation === 270 ? 'Bottom → Top' : 'Inverted';
+    const timeAgo = formatTime(m.timestamp);
+    return `
+      <div class="match-item">
+        <div class="match-item-num">${i + 1}</div>
+        <div class="match-item-body">
+          <div class="match-item-title">${escapeHtml(m.book)}</div>
+          <div class="match-item-meta">🔍 ${escapeHtml(m.term)} • 📖 ${orientText} • ${timeAgo}</div>
+        </div>
+      </div>`;
+  }).join('');
 }
 
 function hasTextFeatures(canvas) {
@@ -1203,6 +1458,47 @@ function normalize(s) {
 function fuzzyMatch(needle, haystack) {
   const n = normalize(needle); const h = normalize(haystack);
   if (!n || !h) return false;
+  
+  if (state.wholeWord) {
+    // Strict mode: needle must appear as a whole word (bounded by spaces/start/end)
+    // Using regex with word boundaries on normalized text
+    const escaped = n.replace(/[.*+?^${}()|[\]\\]/g, '\\function fuzzyMatch(needle, haystack) {
+  const n = normalize(needle); const h = normalize(haystack);
+  if (!n || !h) return false;
+  if (h.includes(n)) return true;
+  const nWords = n.split(' ').filter(w => w.length >= 3);
+  const hWords = h.split(' ').filter(w => w.length >= 2);
+  for (const nw of nWords) {
+    for (const hw of hWords) {
+      if (hw.includes(nw) || (nw.includes(hw) && hw.length >= 3)) return true;
+      if (nw.length >= 4 && hw.length >= 4) {
+        const maxEdits = Math.max(1, Math.floor(nw.length / 5));
+        if (editDistance(nw, hw) <= maxEdits) return true;
+      }
+    }
+  }
+  return false;
+}');
+    const re = new RegExp(`(^|\\s)${escaped}(\\s|$)`);
+    if (re.test(h)) return true;
+    // Also allow multi-word needle to match with small fuzzy tolerance per word
+    const nWords = n.split(' ').filter(w => w.length >= 3);
+    const hWords = h.split(' ');
+    for (const nw of nWords) {
+      let wordMatched = false;
+      for (const hw of hWords) {
+        if (hw === nw) { wordMatched = true; break; }
+        if (nw.length >= 4 && hw.length >= 4) {
+          const maxEdits = Math.max(1, Math.floor(nw.length / 6));
+          if (editDistance(nw, hw) <= maxEdits) { wordMatched = true; break; }
+        }
+      }
+      if (!wordMatched) return false;
+    }
+    return nWords.length > 0;
+  }
+  
+  // Loose mode (default): substring + fuzzy
   if (h.includes(n)) return true;
   const nWords = n.split(' ').filter(w => w.length >= 3);
   const hWords = h.split(' ').filter(w => w.length >= 2);
@@ -1234,49 +1530,51 @@ function editDistance(a, b) {
 
 // ============ Found Feedback ============
 function triggerFoundFeedback(detectedText, orientation) {
-  if (navigator.vibrate) navigator.vibrate([120, 60, 120, 60, 180]);
+  if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
   try {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    [800, 1000, 1200].forEach((freq, i) => {
+    [880, 1100].forEach((freq, i) => {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.connect(gain); gain.connect(audioCtx.destination);
       osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0.08, audioCtx.currentTime + i * 0.1);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.1 + 0.15);
-      osc.start(audioCtx.currentTime + i * 0.1);
-      osc.stop(audioCtx.currentTime + i * 0.1 + 0.15);
+      gain.gain.setValueAtTime(0.06, audioCtx.currentTime + i * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.08 + 0.12);
+      osc.start(audioCtx.currentTime + i * 0.08);
+      osc.stop(audioCtx.currentTime + i * 0.08 + 0.12);
     });
   } catch(e) {}
   
+  // Remove any existing match toast
   const scanner = document.getElementById('scanner');
-  const existing = scanner.querySelector('.found-overlay');
+  const existing = scanner.querySelector('.match-toast');
   if (existing) existing.remove();
   
-  const orientLabel = orientation === 0 ? 'Horizontal'
-    : orientation === 90 ? 'Top → Bottom'
-    : orientation === 270 ? 'Bottom → Top' : 'Inverted';
-  
-  const overlay = document.createElement('div');
-  overlay.className = 'found-overlay';
-  overlay.innerHTML = `
-    <div class="found-card">
-      <div class="found-check">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="4 12 10 18 20 6"/>
-        </svg>
-      </div>
-      <div class="found-title">Book Found</div>
-      <div class="found-book">${escapeHtml(detectedText)}</div>
-      <div class="found-divider"></div>
-      <div class="found-meta">
-        Matched <span class="found-meta-pill">🔍 ${escapeHtml(state.searchTerm)}</span>
-        <span class="found-meta-pill">📖 ${orientLabel}</span>
-      </div>
+  // Compact toast-style indicator — doesn't block the camera
+  const toast = document.createElement('div');
+  toast.className = 'match-toast';
+  toast.innerHTML = `
+    <div class="match-toast-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="4 12 10 18 20 6"/>
+      </svg>
+    </div>
+    <div class="match-toast-text">
+      <div class="match-toast-label">Match Found</div>
+      <div class="match-toast-title">${escapeHtml(detectedText)}</div>
     </div>`;
-  scanner.appendChild(overlay);
-  setTimeout(() => overlay.remove(), 3000);
-  updateStatus('✨ Match found!');
+  scanner.appendChild(toast);
+  
+  // Pulse the matches pill
+  pulseMatchesPill();
+  
+  // Auto-dismiss after 1.8s
+  setTimeout(() => {
+    toast.classList.add('fading');
+    setTimeout(() => toast.remove(), 300);
+  }, 1800);
+  
+  updateStatus(`✨ Found "${detectedText.slice(0, 40)}${detectedText.length > 40 ? '...' : ''}"`);
 }
 
 function escapeHtml(s) {
@@ -1505,12 +1803,18 @@ editInput.addEventListener('keypress', e => { if (e.key === 'Enter') applyEdit()
 function applyEdit() {
   const newTerm = editInput.value.trim();
   if (!newTerm) { showToast('Please enter a search term'); return; }
+  const changed = newTerm.toLowerCase() !== state.searchTerm.toLowerCase();
   state.searchTerm = newTerm;
   addRecent(newTerm);
   document.getElementById('currentSearch').textContent = newTerm;
   state.lastMatchedOrient = null;
   state.lastFoundAt = 0;
-  history.back(); // closes the modal via popstate
+  // Reset session matches if the term actually changed
+  if (changed) {
+    state.sessionMatches = [];
+    updateMatchesPill();
+  }
+  history.back();
   updateStatus(`🔎 Now searching for: ${newTerm}`);
   showToast(`Searching for "${newTerm}"`);
 }
@@ -1533,6 +1837,24 @@ document.getElementById('togglePreview').addEventListener('click', function() {
   state.preview = !state.preview;
   this.classList.toggle('on', state.preview);
   if (!state.preview) document.getElementById('ocrPreview').style.display = 'none';
+});
+document.getElementById('toggleWholeWord').addEventListener('click', function() {
+  state.wholeWord = !state.wholeWord;
+  this.classList.toggle('on', state.wholeWord);
+  showToast(state.wholeWord ? 'Whole word match ON' : 'Whole word match OFF');
+});
+
+// Matches pill + modal
+document.getElementById('matchesPill').addEventListener('click', () => {
+  renderMatchesModal();
+  pushState('matchesModal');
+  document.getElementById('matchesModal').classList.add('open');
+});
+document.getElementById('matchesCloseBtn').addEventListener('click', () => history.back());
+document.getElementById('matchesClearBtn').addEventListener('click', () => {
+  if (state.sessionMatches.length === 0) { showToast('No matches to clear'); return; }
+  clearSessionMatches();
+  showToast('Matches cleared');
 });
 
 function toggleSettings() { document.getElementById('settingsPanel').classList.toggle('open'); }
@@ -1671,13 +1993,45 @@ function openSettingsPanel() {
 // Close functions must NOT themselves call history.back() when invoked from popstate.
 
 function closeScannerScreen() {
+  const foundCount = state.sessionMatches.length;
   stopScanning();
   document.getElementById('scanner').classList.remove('active');
   document.getElementById('home').classList.add('active');
-  // Also ensure modals that belong to scanner are closed
   document.getElementById('settingsPanel').classList.remove('open');
   document.getElementById('editModal').classList.remove('open');
   document.getElementById('snapModal').classList.remove('open');
+  document.getElementById('matchesModal').classList.remove('open');
+  document.getElementById('matchesPill').classList.remove('visible');
+  
+  // Session summary if user found anything
+  if (foundCount > 0) {
+    showSessionSummary(foundCount);
+  }
+  // Clear session for next scan session
+  state.sessionMatches = [];
+  updateMatchesPill();
+}
+
+function showSessionSummary(count) {
+  const existing = document.querySelector('.session-summary-toast');
+  if (existing) existing.remove();
+  const el = document.createElement('div');
+  el.className = 'session-summary-toast';
+  el.innerHTML = `
+    <div class="match-toast-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="4 12 10 18 20 6"/>
+      </svg>
+    </div>
+    <div>
+      <div style="font-size:11px;color:#34d399;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Session Complete</div>
+      <div style="font-size:14px;font-weight:600;margin-top:2px;">Found ${count} book${count !== 1 ? 's' : ''} • Saved to History</div>
+    </div>`;
+  document.body.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('fading');
+    setTimeout(() => el.remove(), 300);
+  }, 3000);
 }
 
 function closeHistoryScreen() {
@@ -1718,6 +2072,8 @@ window.addEventListener('popstate', (event) => {
     closeEditModalOnly();
   } else if (popped === 'snapModal') {
     closeSnapModalOnly();
+  } else if (popped === 'matchesModal') {
+    document.getElementById('matchesModal').classList.remove('open');
   } else if (popped === 'settings') {
     closeSettingsOnly();
   } else {
